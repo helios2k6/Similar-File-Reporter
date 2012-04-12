@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PureMVC.DotNET.35">
+      <HintPath>.\PureMVC.DotNET.35.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,8 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="Model\ClusterObject.cs" />
+    <Compile Include="Model\FileHashProxy.cs" />
+    <Compile Include="Model\FileNameClusterProxy.cs" />
+    <Compile Include="Model\InternalFile.cs" />
+    <Compile Include="Model\InternalFileProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
