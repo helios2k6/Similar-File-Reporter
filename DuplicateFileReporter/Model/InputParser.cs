@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace DuplicateFileReporter.Model
 {
 	public class InputParser
 	{
 		private readonly IDictionary<string, IList<string>> _argCollector = new Dictionary<string, IList<string>>();
+
+		private readonly IList<string> _invalidArgs = new List<string>();
 
 		public InputParser(IEnumerable<string> args)
 		{
@@ -20,7 +23,6 @@ namespace DuplicateFileReporter.Model
 		{
 			var validArgs = ProgramArgsConstants.ValidProgramArgsVector;
 			var currentSwitch = string.Empty;
-			var invalidArgs = new HashSet<string>();
 
 			foreach(var a in args)
 			{
@@ -33,12 +35,22 @@ namespace DuplicateFileReporter.Model
 					}
 				}else if(a.Substring(0, 2).Equals(ProgramArgsConstants.ValidArgPrefix))
 				{
-					invalidArgs.Add(a);
+					_invalidArgs.Add(a);
 				}else
 				{
 					_argCollector[currentSwitch].Add(a);
 				}
 			}
+		}
+
+		public bool FoundInvalidArgs
+		{
+			get { return _invalidArgs.Any(); }
+		}
+
+		public IEnumerable<string> InvalidArgs
+		{
+			get { return _invalidArgs; }
 		}
 	}
 }

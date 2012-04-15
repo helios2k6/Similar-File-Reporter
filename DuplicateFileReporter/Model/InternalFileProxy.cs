@@ -15,6 +15,14 @@ namespace DuplicateFileReporter.Model
 		{
 		}
 
+		public void AddFiles(IEnumerable<InternalFile> files)
+		{
+			foreach(var i in files)
+			{
+				_internalFiles.Add(i);
+			}
+		}
+
 		public void AddFile(InternalFile file)
 		{
 			if(_sealed) throw new InvalidOperationException("Cannot add files when Internal File Proxy is sealed");

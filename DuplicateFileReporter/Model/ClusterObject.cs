@@ -16,5 +16,7 @@ namespace DuplicateFileReporter.Model
 		{
 			get { return _files; }
 		}
+
+		public int Count { get { return _files.Count; } }
 	}
 }

@@ -31,5 +31,10 @@ namespace DuplicateFileReporter.Model
 		{
 			return Uri.LocalPath;
 		}
+
+		public override string ToString()
+		{
+			return GetPath();
+		}
 	}
 }

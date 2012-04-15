@@ -1,34 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Model
 {
 	public class ProgramArgsProxy : Proxy
 	{
-		public ProgramArgsProxy(IEnumerable<string> programArgs) : base(Globals.ProgramArgsProxy)
+		public ProgramArgsProxy(IEnumerable<string> programArgs)
+			: base(Globals.ProgramArgsProxy)
 		{
-			var parserDictionary = new InputParser(programArgs).ArgCollection;
+			var parser = new InputParser(programArgs);
+			var parserDictionary = parser.ArgCollection;
 
-			var path = ".";
+			InvalidArgs = parser.InvalidArgs;
+
+			var path = Directory.GetCurrentDirectory();
 			IList<string> pathCollection;
 			if (parserDictionary.TryGetValue(ProgramArgsConstants.PathArg, out pathCollection))
 			{
-				path = pathCollection[0] == string.Empty ? "." : pathCollection[0];
-			}
-
-			var useDoubleHash = false;
-			IList<string> doubleHashCollection;
-			if(parserDictionary.TryGetValue(ProgramArgsConstants.DoubleHashFlagArg, out doubleHashCollection))
-			{
-				useDoubleHash = true;
+				path = pathCollection.Count < 1 ? Directory.GetCurrentDirectory() : pathCollection[0];
 			}
 
 			IList<string> blacklistCollection;
-			parserDictionary.TryGetValue(ProgramArgsConstants.BlacklistArg, out blacklistCollection);
+			if (!parserDictionary.TryGetValue(ProgramArgsConstants.BlacklistArg, out blacklistCollection))
+				blacklistCollection = new List<string>();
 
-			Args = new ProgramArgs(path, useDoubleHash, blacklistCollection);
+			//Add default blacklist stuff
+			blacklistCollection.Add("thumbs.db");
+			blacklistCollection.Add("readme.txt");
+			blacklistCollection.Add("read me.txt");
+			blacklistCollection.Add("Help Wanted.txt");
+
+			var userWantsHelp = parserDictionary.ContainsKey(ProgramArgsConstants.HelpArg);
+
+			var useStringClusterAnalysis = parserDictionary.ContainsKey(ProgramArgsConstants.UseStringClusterAnalysisArg);
+
+			var useFnv = parserDictionary.ContainsKey(ProgramArgsConstants.UseFnvHash);
+
+			var useCrc32 = parserDictionary.ContainsKey(ProgramArgsConstants.UseCrc32Hash);
+
+			Args = new ProgramArgs(path, useStringClusterAnalysis, useFnv, useCrc32, blacklistCollection, userWantsHelp);
 		}
 
 		public ProgramArgs Args { get; private set; }
+
+		public IEnumerable<string> InvalidArgs { get; private set; }
 	}
 }

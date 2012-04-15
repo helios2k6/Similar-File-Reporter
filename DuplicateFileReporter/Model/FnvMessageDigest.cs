@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace DuplicateFileReporter.Model
 {
@@ -22,6 +23,8 @@ namespace DuplicateFileReporter.Model
 
 		private const UInt32 ThirtyTwoBitOffset = 2166136261;
 		private const UInt64 SixtyFourBitOffset = 14695981039346656037;
+
+		private const int BufferSize = 32768;
 
 		//False by default. Needed just in case one thread calls DoFinal while another thread calls Update
 		private volatile bool _sealed;
@@ -69,11 +72,22 @@ namespace DuplicateFileReporter.Model
 		/// </summary>
 		/// <param name="bytes">The bytes you want to update the hash with</param>
 		/// <exception cref="InvalidOperationException">Thrown when the object is sealed and cannot be updated</exception>
-		public void Update(ICollection<byte> bytes)
+		public void Update(IEnumerable<byte> bytes)
 		{
 			if (_sealed) throw new InvalidOperationException("Cannot update a sealed FnvMessageDigest object");
 
 			UpdateHash(bytes);
+		}
+
+		public void Update(Stream stream)
+		{
+			if(_sealed) throw new InvalidOperationException("Cannot update a sealed FnvMessageDigest object");
+
+			var buffer = new byte[BufferSize];
+			while (stream.Read(buffer, 0, BufferSize) != 0)
+			{
+				UpdateHash(buffer);
+			}
 		}
 
 		/// <summary>
