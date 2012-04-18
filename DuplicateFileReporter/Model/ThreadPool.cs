@@ -9,6 +9,8 @@ namespace DuplicateFileReporter.Model
 	{
 		private readonly ConcurrentQueue<WorkAction> _workQueue = new ConcurrentQueue<WorkAction>();
 
+		private readonly ConcurrentDictionary<WorkAction, ManualResetEvent> _notifications = new ConcurrentDictionary<WorkAction, ManualResetEvent>();
+
 		private readonly IList<Thread> _threads = new List<Thread>();
 
 		private volatile bool _isShutdown;
@@ -45,16 +47,25 @@ namespace DuplicateFileReporter.Model
 				if(_workQueue.TryDequeue(out action))
 				{
 					action.Invoke();
+					_notifications[action].Set();
 				}
 			}
 		}
 
-		public void SubmitAction(Action<object> action, object args)
+		public ManualResetEvent SubmitAction(Action<object> action, object args)
 		{
 			if(_isShutdown) throw new InvalidOperationException("Cannot submit work to threadpool when it is shutdown");
 
-			_workQueue.Enqueue(new WorkAction(action, args));
+			var workAction = new WorkAction(action, args);
+			var notification = new ManualResetEvent(false);
+			_workQueue.Enqueue(workAction);
+
+			if (!_notifications.TryAdd(workAction, notification))
+				throw new Exception("Could not map WorkAction to Notification (AutoResetEvent)");
+
 			_workItems.Release();
+
+			return notification;
 		}
 
 		public void Shutdown()

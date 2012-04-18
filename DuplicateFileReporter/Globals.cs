@@ -17,6 +17,8 @@ namespace DuplicateFileReporter
 		public const string StartUpCommand = "StartUpCommand";
 		public const string ValidateArgsCommand = "ValidateArgsCommand";
 		public const string GenerateClusterAnalysisReportCommand = "GenerateClusterAnalysisReportCommand";
+		public const string GenerateHashReportCommand = "GenerateHashReportCommand";
+		public const string OutputReportsCommand = "OutputReportsCommand";
 
 		//Log Command
 		public const string LogInfoNotification = "LogInfo";
@@ -29,6 +31,7 @@ namespace DuplicateFileReporter
 		public const string ProgramArgsProxy = "ProgramArgsProxy";
 		public const string ThreadPoolProxy = "ThreadPoolProxy";
 		public const string StringComparisonToolsProxy = "StringComparisonToolsProxy";
+		public const string ReportProxy = "ReportProxy";
 
 		//Convienent Fail Command
 		public static void Fail(string msg)

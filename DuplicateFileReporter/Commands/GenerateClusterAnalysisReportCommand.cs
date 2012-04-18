@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using DuplicateFileReporter.Model;
 using PureMVC.Interfaces;
 using PureMVC.Patterns;
@@ -20,30 +18,15 @@ namespace DuplicateFileReporter.Commands
 						  where c.Count > 1
 						  select c).ToList();
 
-			SendNotification(Globals.LogInfoNotification, "Analyzing Groups. There are " + groups.Count + " clusters to analyze");
+			SendNotification(Globals.LogInfoNotification, "Analyzing clusters based on file-names. There are " + groups.Count + " clusters to analyze");
 
-			var reportNumber = 1;
-			if (groups.Count > 0)
+			var reportProxy = Facade.RetrieveProxy(Globals.ReportProxy) as ReportProxy;
+			if(reportProxy == null) Globals.Fail("Could not get ReportProxy");
+
+			foreach(var g in groups)
 			{
-				foreach (var g in groups)
-				{
-					var builder = new StringBuilder();
-
-					builder.Append("===").Append("Report ").Append(reportNumber).Append("===").AppendLine();
-					reportNumber++;
-
-					foreach (var f in g.Files)
-					{
-						builder.Append(f).AppendLine();
-					}
-
-					builder.AppendLine().AppendLine();
-
-					Console.WriteLine(builder.ToString());
-				}
-			}else
-			{
-				Console.WriteLine("No duplicate files were detected");
+				var report = new Report(new ReportType(ReportTypeEnum.FileNameAnalysisReport), g);
+				reportProxy.AddReport(report);
 			}
 		}
 	}

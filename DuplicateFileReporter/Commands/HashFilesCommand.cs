@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using DuplicateFileReporter.Model;
 using PureMVC.Interfaces;
 using PureMVC.Patterns;
@@ -25,6 +27,8 @@ namespace DuplicateFileReporter.Commands
 			{
 				digest.Update(stream);
 			}
+
+			digest.DoFinal();
 
 			var hashProxy = Facade.RetrieveProxy(Globals.FileHashProxy) as FileHashProxy;
 
@@ -71,14 +75,28 @@ namespace DuplicateFileReporter.Commands
 			var listOfFiles = internalFileProxy.GetListOfFiles();
 			var threadPool = threadPoolProxy.Threadpool;
 
+			var listOfFutures = new List<ManualResetEvent>();
+
 			foreach(var f in listOfFiles)
 			{
 				if (argProxy.Args.UseFnvHash)
-					threadPool.SubmitAction(HashFileFnv, f);
+					listOfFutures.Add(threadPool.SubmitAction(HashFileFnv, f));
 
 				if(argProxy.Args.UseCrc32Hash)
-					threadPool.SubmitAction(HashFileCrc32, f);
+					listOfFutures.Add(threadPool.SubmitAction(HashFileCrc32, f));
 			}
+
+			foreach(var f in listOfFutures)
+			{
+				while(!f.WaitOne())
+				{
+					
+				}
+			}
+
+			var fileHashProxy = Facade.RetrieveProxy(Globals.FileHashProxy) as FileHashProxy;
+
+			fileHashProxy.SealProxy();
 		}
 	}
 }

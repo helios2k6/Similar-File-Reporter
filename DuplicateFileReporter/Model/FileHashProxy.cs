@@ -1,4 +1,4 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
 using PureMVC.Patterns;
 
@@ -6,7 +6,11 @@ namespace DuplicateFileReporter.Model
 {
 	public class FileHashProxy : Proxy
 	{
-		private readonly IDictionary<IMessageDigest, ClusterObject> _hashToFileMap = new ConcurrentDictionary<IMessageDigest, ClusterObject>();
+		private readonly IDictionary<HashCode, ClusterObject> _hashToFileMap = new Dictionary<HashCode, ClusterObject>();
+
+		private readonly object _lockObject = new object();
+
+		private volatile bool _sealed;
 
 		public FileHashProxy()
 			: base(Globals.FileHashProxy)
@@ -15,22 +19,34 @@ namespace DuplicateFileReporter.Model
 
 		public void AddFileHashEntry(IMessageDigest hash, InternalFile file)
 		{
-			ClusterObject entry;
+			if(_sealed) throw new InvalidOperationException("Cannot add entries after proxy has been sealed");
 
-			if (!_hashToFileMap.TryGetValue(hash, out entry))
+			var hashCode = hash.GetHash();
+			lock (_lockObject)
 			{
-				entry = new ClusterObject();
-			}
+				ClusterObject cluster;
+				if (!_hashToFileMap.TryGetValue(hashCode, out cluster))
+				{
+					cluster = new ClusterObject();
+					_hashToFileMap.Add(hashCode, cluster);
+				}
 
-			entry.AddFile(file);
+				cluster.AddFile(file);
+			}
 		}
 
-		public ClusterObject GetCluster(IMessageDigest hash)
+		public void SealProxy()
 		{
-			ClusterObject entry;
-			_hashToFileMap.TryGetValue(hash, out entry);
+			_sealed = true;
+		}
 
-			return entry;
+		public IDictionary<HashCode, ClusterObject> Clusters
+		{
+			get
+			{
+				if (!_sealed) throw new InvalidOperationException("Cannot get clusters when proxy is unsealed");
+				return _hashToFileMap;
+			}
 		}
 	}
 }

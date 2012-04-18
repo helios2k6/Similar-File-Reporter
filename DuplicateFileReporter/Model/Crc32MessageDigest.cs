@@ -116,5 +116,10 @@ namespace DuplicateFileReporter.Model
 		{
 			return Crc32MessageDigestHash;
 		}
+
+		public HashCode GetHash()
+		{
+			return new HashCode(HashCodeType.Crc32Hash, Hash);
+		}
 	}
 }

@@ -9,6 +9,8 @@ namespace DuplicateFileReporter.Commands
 {
 	public class LogCommand : SimpleCommand
 	{
+		private readonly object _lockObject = new object();
+
 		public void LogError(string msg)
 		{
 			var builder = new StringBuilder();
@@ -17,8 +19,10 @@ namespace DuplicateFileReporter.Commands
 				.Append(DateTime.Now.ToString(CultureInfo.InvariantCulture))
 				.Append(" - ")
 				.Append(msg);
-
-			Console.Error.WriteLine(builder.ToString());
+			lock (_lockObject)
+			{
+				Console.Error.WriteLine(builder.ToString());
+			}
 		}
 
 		public void LogInfo(string msg)
@@ -30,7 +34,10 @@ namespace DuplicateFileReporter.Commands
 				.Append(" - ")
 				.Append(msg);
 
-			Console.Error.WriteLine(builder.ToString());
+			lock (_lockObject)
+			{
+				Console.Error.WriteLine(builder.ToString());
+			}
 		}
 
 		public override void Execute(INotification notification)

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using DuplicateFileReporter.Model;
 using PureMVC.Patterns;
 
@@ -31,6 +32,8 @@ namespace DuplicateFileReporter.Commands
 			facade.RegisterCommand(Globals.PrintHelpCommand, typeof(PrintHelpCommand));
 			facade.RegisterCommand(Globals.ValidateArgsCommand, typeof(ValidateArgsCommand));
 			facade.RegisterCommand(Globals.GenerateClusterAnalysisReportCommand, typeof(GenerateClusterAnalysisReportCommand));
+			facade.RegisterCommand(Globals.GenerateHashReportCommand, typeof(GenerateHashReportCommand));
+			facade.RegisterCommand(Globals.OutputReportsCommand, typeof(OutputReportsCommand));
 
 			//Register Proxy
 			facade.RegisterProxy(new FileHashProxy());
@@ -39,6 +42,7 @@ namespace DuplicateFileReporter.Commands
 			facade.RegisterProxy(new ProgramArgsProxy(args));
 			facade.RegisterProxy(new StringComparisonToolsProxy());
 			facade.RegisterProxy(new ThreadPoolProxy());
+			facade.RegisterProxy(new ReportProxy());
 
 			//Fire off first notifications
 			facade.SendNotification(Globals.LogInfoNotification, "Starting analysis");
@@ -47,21 +51,24 @@ namespace DuplicateFileReporter.Commands
 			facade.SendNotification(Globals.LogInfoNotification, "Searching for files to analyze");
 			facade.SendNotification(Globals.HydrateInternalFileProxyCommand);
 
-			//Fire off string name comparison notification
-			var thread1 = new Thread(SendClusterAnalysisNotification);
-			var thread2 = new Thread(SendHashFilesNotification);
+			var threads = new List<Thread> {new Thread(SendClusterAnalysisNotification), new Thread(SendHashFilesNotification)};
 
-			//Fire off cluster analysis command
-			thread1.Start();
-			thread1.Join();
+			foreach(var t in threads)
+			{
+				t.Start();
+			}
 
-			//Fire off hash analysis
-			thread2.Start();
-			thread2.Join();
+			foreach(var t in threads)
+			{
+				t.Join();
+			}
 
-			//Generate Reports
-			facade.SendNotification(Globals.LogInfoNotification, "Generating file name clustering report");
+			//Generate reports
 			facade.SendNotification(Globals.GenerateClusterAnalysisReportCommand);
+			facade.SendNotification(Globals.GenerateHashReportCommand);
+
+			//Print reports out
+			facade.SendNotification(Globals.OutputReportsCommand);
 
 			//Shutdown properly
 			facade.SendNotification(Globals.LogInfoNotification, "Finished analysis. Shutting down");

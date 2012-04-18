@@ -52,9 +52,11 @@
     <Compile Include="Commands\ClusterAnalyzeNamesCommand.cs" />
     <Compile Include="Commands\ExitCommand.cs" />
     <Compile Include="Commands\GenerateClusterAnalysisReportCommand.cs" />
+    <Compile Include="Commands\GenerateHashReportCommand.cs" />
     <Compile Include="Commands\HashFilesCommand.cs" />
     <Compile Include="Commands\HydrateInternalFileProxyCommand.cs" />
     <Compile Include="Commands\LogCommand.cs" />
+    <Compile Include="Commands\OutputReportsCommand.cs" />
     <Compile Include="Commands\PrintHelpCommand.cs" />
     <Compile Include="Commands\StartUpCommand.cs" />
     <Compile Include="Commands\ValidateArgsCommand.cs" />
@@ -64,6 +66,8 @@
     <Compile Include="Model\FileHashProxy.cs" />
     <Compile Include="Model\FileNameClusterProxy.cs" />
     <Compile Include="Model\FnvMessageDigest.cs" />
+    <Compile Include="Model\HashCode.cs" />
+    <Compile Include="Model\HashCodeType.cs" />
     <Compile Include="Model\InternalFile.cs" />
     <Compile Include="Model\InternalFileProxy.cs" />
     <Compile Include="Model\IMessageDigest.cs" />
@@ -71,6 +75,10 @@
     <Compile Include="Model\ProgramArgs.cs" />
     <Compile Include="Model\ProgramArgsConstants.cs" />
     <Compile Include="Model\ProgramArgsProxy.cs" />
+    <Compile Include="Model\Report.cs" />
+    <Compile Include="Model\ReportProxy.cs" />
+    <Compile Include="Model\ReportType.cs" />
+    <Compile Include="Model\ReportTypeEnum.cs" />
     <Compile Include="Model\StringComparisonToolsProxy.cs" />
     <Compile Include="Model\ThreadPool.cs" />
     <Compile Include="Model\ThreadPoolProxy.cs" />

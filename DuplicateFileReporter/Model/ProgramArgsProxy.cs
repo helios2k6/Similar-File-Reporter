@@ -28,9 +28,13 @@ namespace DuplicateFileReporter.Model
 
 			//Add default blacklist stuff
 			blacklistCollection.Add("thumbs.db");
+			blacklistCollection.Add("Thumbs.db");
 			blacklistCollection.Add("readme.txt");
 			blacklistCollection.Add("read me.txt");
 			blacklistCollection.Add("Help Wanted.txt");
+			blacklistCollection.Add("PureMVC.DotNET.35");
+			blacklistCollection.Add("SimMetrics");
+			blacklistCollection.Add("DuplicateFileReporter");
 
 			var userWantsHelp = parserDictionary.ContainsKey(ProgramArgsConstants.HelpArg);
 

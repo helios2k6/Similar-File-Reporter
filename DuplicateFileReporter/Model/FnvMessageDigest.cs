@@ -136,5 +136,10 @@ namespace DuplicateFileReporter.Model
 		{
 			return MessageDigestName;
 		}
+
+		public HashCode GetHash()
+		{
+			return new HashCode(HashCodeType.Fnv1A32Hash, Get32BitHash());
+		}
 	}
 }

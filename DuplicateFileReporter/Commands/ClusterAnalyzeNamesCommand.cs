@@ -8,9 +8,8 @@ namespace DuplicateFileReporter.Commands
 {
 	public class ClusterAnalyzeNamesCommand : SimpleCommand
 	{
-
-		private static readonly double MagicMembershipThresholdCoefficient = 0.65;
-		private static readonly double MagicEarlyTerminationCoefficient = MagicMembershipThresholdCoefficient - 0.18;
+		private const double MagicMembershipThresholdCoefficient = 0.69;
+		private const double MagicEarlyTerminationCoefficient = MagicMembershipThresholdCoefficient - 0.18;
 
 		private bool EvaluateFileMembershipInCluster(InternalFile file, ClusterObject cluster, out double result)
 		{
@@ -23,7 +22,7 @@ namespace DuplicateFileReporter.Commands
 
 			foreach(var f in cluster.Files)
 			{
-				var currentAvg = stringComparisonToolsProxy.CompareSimilarities(file.GetFileName(), f.GetFileName());
+				var currentAvg = stringComparisonToolsProxy.CompareSimilarities(file.GetCleanedFileName(), f.GetCleanedFileName());
 
 				if (currentAvg < MagicEarlyTerminationCoefficient)
 				{
@@ -64,7 +63,7 @@ namespace DuplicateFileReporter.Commands
 
 				var possibleClusters = new Dictionary<ClusterObject, double>();
 
-				SendNotification(Globals.LogInfoNotification, "Analyzing file " + f);
+				SendNotification(Globals.LogInfoNotification, "Analyzing file " + f + " using " + f.GetCleanedFileName());
 
 				//Cycle through clusters
 				foreach(var c in clusters)
