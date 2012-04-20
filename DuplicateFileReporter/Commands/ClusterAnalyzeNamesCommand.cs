@@ -8,8 +8,8 @@ namespace DuplicateFileReporter.Commands
 {
 	public class ClusterAnalyzeNamesCommand : SimpleCommand
 	{
-		private const double MagicMembershipThresholdCoefficient = 0.69;
-		private const double MagicEarlyTerminationCoefficient = MagicMembershipThresholdCoefficient - 0.18;
+		private const double MagicMembershipThresholdCoefficient = 0.85;
+		private const double MagicEarlyTerminationCoefficient = MagicMembershipThresholdCoefficient - 0.20;
 
 		private bool EvaluateFileMembershipInCluster(InternalFile file, ClusterObject cluster, out double result)
 		{

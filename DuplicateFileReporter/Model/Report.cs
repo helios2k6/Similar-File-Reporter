@@ -4,19 +4,15 @@
 	{
 		private static volatile int _idCounter;
 
-		public Report(ReportType type, ClusterObject cluster)
+		public static int GetNextId()
 		{
-			Id = _idCounter++;
-			Type = type;
-			Cluster = cluster;
+			return _idCounter++;
 		}
 
-		public int Id { get; private set; }
+		public int Id { get; set; }
 
-		public ReportType Type { get; private set; }
+		public ReportTypeEnum Type { get; set; }
 
-		public ClusterObject Cluster { get; private set; }
-
-		
+		public ClusterObject Cluster { get; set; }
 	}
 }

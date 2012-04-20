@@ -27,16 +27,19 @@ namespace DuplicateFileReporter.Commands
 			foreach(var g in groups)
 			{
 				var hashCode = g.Key;
+				var report = new Report {Id = Report.GetNextId(),Cluster = g.Value};
 
 				switch (hashCode.HashCodeType)
 				{
 					case HashCodeType.Crc32Hash:
-						reportProxy.AddReport(new Report(new ReportType(ReportTypeEnum.Crc32HashReport), g.Value));
+						report.Type = ReportTypeEnum.Crc32HashReport;
 						break;
 					case HashCodeType.Fnv1A32Hash:
-						reportProxy.AddReport(new Report(new ReportType(ReportTypeEnum.Fnv32HashReport), g.Value));
+						report.Type = ReportTypeEnum.Fnv32HashReport;
 						break;
 				}
+
+				reportProxy.AddReport(report);
 			}
 		}
 	}

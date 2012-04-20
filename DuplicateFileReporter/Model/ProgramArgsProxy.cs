@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using PureMVC.Patterns;
@@ -26,6 +27,17 @@ namespace DuplicateFileReporter.Model
 			if (!parserDictionary.TryGetValue(ProgramArgsConstants.BlacklistArg, out blacklistCollection))
 				blacklistCollection = new List<string>();
 
+			var outputFile = string.Empty;
+			IList<string> outputFileCollection;
+			if (parserDictionary.TryGetValue(ProgramArgsConstants.OutputArg, out outputFileCollection))
+				outputFile = outputFileCollection[0];
+
+			var outputFileFormat = OutputReportType.FLAT.ToString();
+			IList<string> outputFileFormatCollection;
+			if (parserDictionary.TryGetValue(ProgramArgsConstants.OutputFormatArg, out outputFileFormatCollection))
+				outputFileFormat = outputFileFormatCollection[0];
+				
+
 			//Add default blacklist stuff
 			blacklistCollection.Add("thumbs.db");
 			blacklistCollection.Add("Thumbs.db");
@@ -44,7 +56,7 @@ namespace DuplicateFileReporter.Model
 
 			var useCrc32 = parserDictionary.ContainsKey(ProgramArgsConstants.UseCrc32Hash);
 
-			Args = new ProgramArgs(path, useStringClusterAnalysis, useFnv, useCrc32, blacklistCollection, userWantsHelp);
+			Args = new ProgramArgs(path, useStringClusterAnalysis, useFnv, useCrc32, blacklistCollection, outputFile, outputFileFormat, userWantsHelp);
 		}
 
 		public ProgramArgs Args { get; private set; }

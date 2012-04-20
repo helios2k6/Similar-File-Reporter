@@ -79,6 +79,11 @@ namespace DuplicateFileReporter.Model
 			UpdateHash(bytes);
 		}
 
+		/// <summary>
+		/// Updates the hash with the provided Stream object
+		/// </summary>
+		/// <param name="stream">The Stream object you want to use to update the message digest</param>
+		/// <exception cref="InvalidOperationException">Thrown when the object is sealed and cannot be updated</exception>
 		public void Update(Stream stream)
 		{
 			if(_sealed) throw new InvalidOperationException("Cannot update a sealed FnvMessageDigest object");
@@ -113,6 +118,7 @@ namespace DuplicateFileReporter.Model
 		/// <summary>
 		/// Gets the 32-bit hash version of this object's hashcode
 		/// </summary>
+		/// <remarks>The FNVMessageDigest object must be sealed before calling this method</remarks>
 		/// <returns>The 32-bit FNV hash</returns>
 		public byte[] Get32BitHash()
 		{
@@ -124,6 +130,7 @@ namespace DuplicateFileReporter.Model
 		/// <summary>
 		/// Gets the 64-bit hash version of this object hashcode
 		/// </summary>
+		/// <remarks>The FNVMessageDigest object must be sealed before calling this method</remarks>
 		/// <returns>The 64-bit FNV hash</returns>
 		public byte[] Get64BitHash()
 		{

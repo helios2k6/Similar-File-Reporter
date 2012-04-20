@@ -14,24 +14,24 @@ namespace DuplicateFileReporter.Model
 		{
 			_metricTools = new List<AbstractStringMetric>
 			               	{
-			               		new BlockDistance(),
-			               		new ChapmanLengthDeviation(),
-			               		new ChapmanMeanLength(),
-			               		new CosineSimilarity(),
-			               		new DiceSimilarity(),
-			               		new EuclideanDistance(),
-			               		new JaccardSimilarity(),
-			               		new Jaro(),
+			               		//new BlockDistance(),
+			               		//new ChapmanLengthDeviation(),
+			               		//new ChapmanMeanLength(),
+			               		//new CosineSimilarity(),
+			               		//new DiceSimilarity(),
+			               		//new EuclideanDistance(),
+			               		//new JaccardSimilarity(),
+			               		//new Jaro(),
 			               		new JaroWinkler(),
 			               		new Levenstein(),
-			               		new MatchingCoefficient(),
+			               		//new MatchingCoefficient(),
 			               		new MongeElkan(),
 			               		new NeedlemanWunch(),
-			               		new OverlapCoefficient(),
+			               		//new OverlapCoefficient(),
 			               		new QGramsDistance(),
-			               		new SmithWaterman(),
+			               		//new SmithWaterman(),
 			               		new SmithWatermanGotoh(),
-			               		new SmithWatermanGotohWindowedAffine()
+			               		//new SmithWatermanGotohWindowedAffine()
 			               	};
 		}
 

@@ -25,7 +25,7 @@ namespace DuplicateFileReporter.Commands
 
 			foreach(var g in groups)
 			{
-				var report = new Report(new ReportType(ReportTypeEnum.FileNameAnalysisReport), g);
+				var report = new Report {Id = Report.GetNextId(), Type = ReportTypeEnum.FileNameAnalysisReport, Cluster = g};
 				reportProxy.AddReport(report);
 			}
 		}

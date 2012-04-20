@@ -12,6 +12,8 @@ namespace DuplicateFileReporter.Model
 		public static readonly string UseStringClusterAnalysisArg = "--use-name-analysis";
 		public static readonly string UseFnvHash = "--use-fnv-hash";
 		public static readonly string UseCrc32Hash = "--use-crc32-hash";
+		public static readonly string OutputArg = "--output";
+		public static readonly string OutputFormatArg = "--output-format";
 
 		public static readonly string PathArgHelpString = "Folder path you want to analyze. (Default: Current directory)";
 		public static readonly string BlacklistArgHelpString = "Files you do not want to analyze";
@@ -19,6 +21,11 @@ namespace DuplicateFileReporter.Model
 		public static readonly string UseStringClusterAnalysisArgHelpString = "Use file name similarity to cluster possible file duplicates";
 		public static readonly string UseFnvHashHelpString = "Use the FNV-1a hash to detect file duplicates";
 		public static readonly string UseCrc32HashHelpString = "Use the CRC-32 hash to detect file duplicates";
+		public static readonly string OutputArgHelpString = "Output file to print results to";
+
+		public static readonly string OutputFormatArgHelpString =
+			"Format of the report. Valid inputs: XML, JSON, or flat (Default: Flat)";
+
 
 		public static IList<string> ValidProgramArgsVector
 		{
@@ -30,7 +37,9 @@ namespace DuplicateFileReporter.Model
 					HelpArg, 
 					UseStringClusterAnalysisArg ,
 					UseFnvHash,
-					UseCrc32Hash
+					UseCrc32Hash,
+					OutputArg,
+					OutputFormatArg
 				};
 			}
 		}
@@ -46,7 +55,9 @@ namespace DuplicateFileReporter.Model
 							{UseStringClusterAnalysisArg, UseStringClusterAnalysisArgHelpString},
 							{UseFnvHash, UseFnvHashHelpString},
 							{UseCrc32Hash, UseCrc32HashHelpString},
-							{HelpArg, HelpArgHelpString}
+							{HelpArg, HelpArgHelpString},
+							{OutputArg, OutputArgHelpString},
+							{OutputFormatArg, OutputFormatArgHelpString},
 				       	};
 			}
 		}

@@ -9,7 +9,7 @@ namespace DuplicateFileReporter.Model
 
 		private const string BracketGroups = @"(\[\w*\d*\])";
 
-		private const string ParenthesisGroups = @"(\(\w*\d\))";
+		private const string ParenthesisGroups = @"(\(\w*\d*\))";
 
 		private readonly Uri _uri;
 
@@ -31,11 +31,13 @@ namespace DuplicateFileReporter.Model
 		{
 			_cleanFileName = GetFileName();
 
-			_cleanFileName = Regex.Replace(_cleanFileName, Deliminators, "");
+			_cleanFileName = Regex.Replace(_cleanFileName, Deliminators, string.Empty);
 
-			_cleanFileName = Regex.Replace(_cleanFileName, BracketGroups, "");
+			_cleanFileName = Regex.Replace(_cleanFileName, BracketGroups, string.Empty);
 
-			_cleanFileName = Regex.Replace(_cleanFileName, ParenthesisGroups, "");
+			_cleanFileName = Regex.Replace(_cleanFileName, ParenthesisGroups, string.Empty);
+
+			_cleanFileName = Regex.Replace(_cleanFileName, " ", string.Empty);
 		}
 
 		public Uri Uri

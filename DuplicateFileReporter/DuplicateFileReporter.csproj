@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PureMVC.DotNET.35">
       <HintPath>.\PureMVC.DotNET.35.dll</HintPath>
     </Reference>
@@ -72,12 +75,12 @@
     <Compile Include="Model\InternalFileProxy.cs" />
     <Compile Include="Model\IMessageDigest.cs" />
     <Compile Include="Model\InputParser.cs" />
+    <Compile Include="Model\OutputReportType.cs" />
     <Compile Include="Model\ProgramArgs.cs" />
     <Compile Include="Model\ProgramArgsConstants.cs" />
     <Compile Include="Model\ProgramArgsProxy.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\ReportProxy.cs" />
-    <Compile Include="Model\ReportType.cs" />
     <Compile Include="Model\ReportTypeEnum.cs" />
     <Compile Include="Model\StringComparisonToolsProxy.cs" />
     <Compile Include="Model\ThreadPool.cs" />
