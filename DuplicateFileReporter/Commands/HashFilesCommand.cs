@@ -25,7 +25,7 @@ namespace DuplicateFileReporter.Commands
 
 			var digest = new FnvMessageDigest();
 
-			using(Stream stream = File.Open(file.GetPath(), FileMode.Open))
+			using(Stream stream = File.OpenRead(file.GetPath()))
 			{
 				digest.Update(stream);
 			}
@@ -53,7 +53,7 @@ namespace DuplicateFileReporter.Commands
 
 			var digest = new Crc32MessageDigest();
 
-			using (Stream stream = File.Open(file.GetPath(), FileMode.Open))
+			using (Stream stream = File.OpenRead(file.GetPath()))
 			{
 				digest.ComputeHash(stream);
 			}
@@ -65,33 +65,39 @@ namespace DuplicateFileReporter.Commands
 			hashProxy.AddFileHashEntry(digest, file);
 		}
 
-		public override void Execute(INotification notification)
+		private void ProcessFnvHash()
 		{
-			var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
 			var argProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
+			if (!argProxy.Args.UseFnvHash) return;
 
-			if(internalFileProxy == null || argProxy == null)
-				Globals.Fail("Could not cast InternalFileProxy or ProgramArgsProxy or ThreadPoolProxy");
-
+			var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
 			var listOfFiles = internalFileProxy.GetListOfFiles();
 
-			var listOfTasks = new List<Task>();
+			Parallel.ForEach(listOfFiles, e => HashFileFnv(e));
+		}
 
-			foreach(var f in listOfFiles)
+		private void ProcessCrc32Hash()
+		{
+			var argProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
+			if (!argProxy.Args.UseCrc32Hash) return;
+
+			var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
+			var listOfFiles = internalFileProxy.GetListOfFiles();
+
+			Parallel.ForEach(listOfFiles, e => HashFileCrc32(e));
+		}
+
+		public override void Execute(INotification notification)
+		{
+			var listOfTasks = new List<Task> 
+			{ 
+				Task.Factory.StartNew(ProcessFnvHash),
+				Task.Factory.StartNew(ProcessCrc32Hash)
+			};
+
+			foreach (var t in listOfTasks)
 			{
-				if (argProxy.Args.UseFnvHash){
-					listOfTasks.Add(Task.Factory.StartNew(HashFileFnv, f));
-				}
-
-				if (argProxy.Args.UseCrc32Hash)
-				{
-					listOfTasks.Add(Task.Factory.StartNew(HashFileCrc32, f));
-				}
-			}
-
-			foreach (var f in listOfTasks)
-			{
-				f.Wait();
+				t.Wait();
 			}
 
 			var fileHashProxy = Facade.RetrieveProxy(Globals.FileHashProxy) as FileHashProxy;
