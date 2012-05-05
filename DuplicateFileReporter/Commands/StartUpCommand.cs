@@ -2,6 +2,7 @@
 using System.Threading;
 using DuplicateFileReporter.Model;
 using PureMVC.Patterns;
+using System.Threading.Tasks;
 
 namespace DuplicateFileReporter.Commands
 {
@@ -41,7 +42,6 @@ namespace DuplicateFileReporter.Commands
 			facade.RegisterProxy(new InternalFileProxy());
 			facade.RegisterProxy(new ProgramArgsProxy(args));
 			facade.RegisterProxy(new StringComparisonToolsProxy());
-			facade.RegisterProxy(new ThreadPoolProxy());
 			facade.RegisterProxy(new ReportProxy());
 
 			//Fire off first notifications
@@ -51,16 +51,10 @@ namespace DuplicateFileReporter.Commands
 			facade.SendNotification(Globals.LogInfoNotification, "Searching for files to analyze");
 			facade.SendNotification(Globals.HydrateInternalFileProxyCommand);
 
-			var threads = new List<Thread> {new Thread(SendClusterAnalysisNotification), new Thread(SendHashFilesNotification)};
+			var tasks = new List<Task> { Task.Factory.StartNew(SendClusterAnalysisNotification), Task.Factory.StartNew(SendHashFilesNotification)};
 
-			foreach(var t in threads)
-			{
-				t.Start();
-			}
-
-			foreach(var t in threads)
-			{
-				t.Join();
+			foreach(var t in tasks){
+				t.Wait();
 			}
 
 			//Generate reports

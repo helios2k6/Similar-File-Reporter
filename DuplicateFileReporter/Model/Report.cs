@@ -15,4 +15,5 @@
 
 		public ClusterObject Cluster { get; set; }
 	}
+
 }

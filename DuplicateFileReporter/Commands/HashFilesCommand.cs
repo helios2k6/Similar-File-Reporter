@@ -4,6 +4,8 @@ using System.Threading;
 using DuplicateFileReporter.Model;
 using PureMVC.Interfaces;
 using PureMVC.Patterns;
+using System.Threading.Tasks;
+using System;
 
 namespace DuplicateFileReporter.Commands
 {
@@ -67,31 +69,29 @@ namespace DuplicateFileReporter.Commands
 		{
 			var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
 			var argProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
-			var threadPoolProxy = Facade.RetrieveProxy(Globals.ThreadPoolProxy) as ThreadPoolProxy;
 
-			if(internalFileProxy == null || argProxy == null || threadPoolProxy == null)
+			if(internalFileProxy == null || argProxy == null)
 				Globals.Fail("Could not cast InternalFileProxy or ProgramArgsProxy or ThreadPoolProxy");
 
 			var listOfFiles = internalFileProxy.GetListOfFiles();
-			var threadPool = threadPoolProxy.Threadpool;
 
-			var listOfFutures = new List<ManualResetEvent>();
+			var listOfTasks = new List<Task>();
 
 			foreach(var f in listOfFiles)
 			{
-				if (argProxy.Args.UseFnvHash)
-					listOfFutures.Add(threadPool.SubmitAction(HashFileFnv, f));
+				if (argProxy.Args.UseFnvHash){
+					listOfTasks.Add(Task.Factory.StartNew(HashFileFnv, f));
+				}
 
-				if(argProxy.Args.UseCrc32Hash)
-					listOfFutures.Add(threadPool.SubmitAction(HashFileCrc32, f));
+				if (argProxy.Args.UseCrc32Hash)
+				{
+					listOfTasks.Add(Task.Factory.StartNew(HashFileCrc32, f));
+				}
 			}
 
-			foreach(var f in listOfFutures)
+			foreach (var f in listOfTasks)
 			{
-				while(!f.WaitOne())
-				{
-					
-				}
+				f.Wait();
 			}
 
 			var fileHashProxy = Facade.RetrieveProxy(Globals.FileHashProxy) as FileHashProxy;

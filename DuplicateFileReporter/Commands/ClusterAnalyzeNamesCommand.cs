@@ -8,7 +8,7 @@ namespace DuplicateFileReporter.Commands
 {
 	public class ClusterAnalyzeNamesCommand : SimpleCommand
 	{
-		private const double MagicMembershipThresholdCoefficient = 0.85;
+		private const double MagicMembershipThresholdCoefficient = 0.95;
 		private const double MagicEarlyTerminationCoefficient = MagicMembershipThresholdCoefficient - 0.20;
 
 		private bool EvaluateFileMembershipInCluster(InternalFile file, ClusterObject cluster, out double result)
@@ -63,24 +63,22 @@ namespace DuplicateFileReporter.Commands
 
 				var possibleClusters = new Dictionary<ClusterObject, double>();
 
-				SendNotification(Globals.LogInfoNotification, "Analyzing file " + f + " using " + f.GetCleanedFileName());
-
 				//Cycle through clusters
 				foreach(var c in clusters)
 				{
 					double result;
 
-					if(EvaluateFileMembershipInCluster(f, c, out result))
-					{
-						possibleClusters.Add(c, result);
-					}
+					if (!EvaluateFileMembershipInCluster(f, c, out result)) continue;
+
+					SendNotification(Globals.LogInfoNotification, "Adding " + f.GetFileName() + " to Cluster " + c.Id);
+					possibleClusters.Add(c, result);
 				}
 
 				//See if we have any clusters
 				if(possibleClusters.Count > 0)
 				{
 					//Figure out which cluster has the highest double
-					ClusterObject highestRatedCluster = default(ClusterObject);
+					var highestRatedCluster = default(ClusterObject);
 					var lastRating = 0.0;
 
 					foreach (var c in possibleClusters)

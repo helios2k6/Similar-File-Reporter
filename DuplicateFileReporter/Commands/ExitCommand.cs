@@ -9,11 +9,6 @@ namespace DuplicateFileReporter.Commands
 	{
 		private void CleanUp()
 		{
-			var threadPoolProxy = Facade.RetrieveProxy(Globals.ThreadPoolProxy) as ThreadPoolProxy;
-			if (threadPoolProxy == null) return;
-
-			threadPoolProxy.Threadpool.Shutdown();
-			threadPoolProxy.Threadpool.WaitOnAllWork();
 		}
 
 		private void ExitFail()

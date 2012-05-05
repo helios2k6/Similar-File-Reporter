@@ -66,6 +66,7 @@
     <Compile Include="Globals.cs" />
     <Compile Include="Model\ClusterObject.cs" />
     <Compile Include="Model\Crc32MessageDigest.cs" />
+    <Compile Include="Model\EnumExtensions.cs" />
     <Compile Include="Model\FileHashProxy.cs" />
     <Compile Include="Model\FileNameClusterProxy.cs" />
     <Compile Include="Model\FnvMessageDigest.cs" />
@@ -83,8 +84,6 @@
     <Compile Include="Model\ReportProxy.cs" />
     <Compile Include="Model\ReportTypeEnum.cs" />
     <Compile Include="Model\StringComparisonToolsProxy.cs" />
-    <Compile Include="Model\ThreadPool.cs" />
-    <Compile Include="Model\ThreadPoolProxy.cs" />
     <Compile Include="Model\WorkAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
