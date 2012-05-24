@@ -37,7 +37,7 @@ namespace DuplicateFileReporter.Model
 
 		public double CompareSimilarities(string a, string b)
 		{
-			return _metricTools.Sum(c => c.GetSimilarity(a, b)) / _metricTools.Count;
+			return _metricTools.AsParallel<AbstractStringMetric>().Sum(c => c.GetSimilarity(a, b)) / _metricTools.Count;
 		}
 	}
 }

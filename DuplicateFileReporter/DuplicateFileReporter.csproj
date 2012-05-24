@@ -84,7 +84,6 @@
     <Compile Include="Model\ReportProxy.cs" />
     <Compile Include="Model\ReportTypeEnum.cs" />
     <Compile Include="Model\StringComparisonToolsProxy.cs" />
-    <Compile Include="Model\WorkAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
