@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <StartArguments>--path "C:\Users\Andrew\Music\DOCKING BAY\Other" --use-name-analysis --use-crc32-hash --use-fnv-hash --output-format xml</StartArguments>
+    <StartArguments>--path ""D:\Andrew\Pictures\Temp" --use-fnv-hash --output-format json</StartArguments>
   </PropertyGroup>
 </Project>

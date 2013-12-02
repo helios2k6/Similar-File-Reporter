@@ -8,9 +8,9 @@ namespace DuplicateFileReporter.Commands
 {
 	public class StartUpCommand
 	{
-		private static void SendClusterAnalysisNotification()
+		private static void SendAnalyzeNamesNotification()
 		{
-			Facade.Instance.SendNotification(Globals.ClusterAnalyzeNamesCommand);
+			Facade.Instance.SendNotification(Globals.AnalyzeNamesCommand);
 		}
 
 		private static void SendHashFilesNotification()
@@ -23,7 +23,7 @@ namespace DuplicateFileReporter.Commands
 			var facade = Facade.Instance;
 
 			//Register Commands
-			facade.RegisterCommand(Globals.ClusterAnalyzeNamesCommand, typeof(ClusterAnalyzeNamesCommand));
+			facade.RegisterCommand(Globals.AnalyzeNamesCommand, typeof(AnalyzeNamesCommand));
 			facade.RegisterCommand(Globals.ExitFail, typeof(ExitCommand));
 			facade.RegisterCommand(Globals.ExitSuccess, typeof(ExitCommand));
 			facade.RegisterCommand(Globals.HashFilesCommand, typeof(HashFilesCommand));
@@ -51,9 +51,21 @@ namespace DuplicateFileReporter.Commands
 			facade.SendNotification(Globals.LogInfoNotification, "Searching for files to analyze");
 			facade.SendNotification(Globals.HydrateInternalFileProxyCommand);
 
-			var tasks = new List<Task> { Task.Factory.StartNew(SendClusterAnalysisNotification), Task.Factory.StartNew(SendHashFilesNotification)};
+			var programArgs = ((ProgramArgsProxy)facade.RetrieveProxy(Globals.ProgramArgsProxy)).Args;
+			var listOfTasks = new List<Task>();
 
-			foreach(var t in tasks){
+			if (programArgs.UseCrc32Hash || programArgs.UseFnvHash)
+			{
+				listOfTasks.Add(Task.Factory.StartNew(SendHashFilesNotification));
+			}
+
+			if (programArgs.UseStringClusterAnalysis)
+			{
+				listOfTasks.Add(Task.Factory.StartNew(SendAnalyzeNamesNotification));
+			}
+
+			foreach (var t in listOfTasks)
+			{
 				t.Wait();
 			}
 

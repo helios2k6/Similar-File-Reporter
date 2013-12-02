@@ -6,7 +6,7 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-	public class ClusterAnalyzeNamesCommand : SimpleCommand
+	public class AnalyzeNamesCommand : SimpleCommand
 	{
 		private const double MagicMembershipThresholdCoefficient = 0.95;
 		private const double MagicEarlyTerminationCoefficient = MagicMembershipThresholdCoefficient - 0.20;

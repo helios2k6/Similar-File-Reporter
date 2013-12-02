@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ClusterAnalyzeNamesCommand.cs" />
+    <Compile Include="Commands\AnalyzeNamesCommand.cs" />
     <Compile Include="Commands\ExitCommand.cs" />
     <Compile Include="Commands\GenerateClusterAnalysisReportCommand.cs" />
     <Compile Include="Commands\GenerateHashReportCommand.cs" />

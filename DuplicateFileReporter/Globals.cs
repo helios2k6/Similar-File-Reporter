@@ -11,7 +11,7 @@ namespace DuplicateFileReporter
 
 		//Core Function Commands
 		public const string HydrateInternalFileProxyCommand = "HydrateInternalFileProxyCommand";
-		public const string ClusterAnalyzeNamesCommand = "ClusterAnalyzeNamesCommand";
+		public const string AnalyzeNamesCommand = "ClusterAnalyzeNamesCommand";
 		public const string HashFilesCommand = "HashFilesCommand";
 		public const string PrintHelpCommand = "PrintHelpCommand";
 		public const string StartUpCommand = "StartUpCommand";

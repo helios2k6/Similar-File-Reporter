@@ -119,7 +119,7 @@ namespace DuplicateFileReporter.Model
 
 		public HashCode GetHash()
 		{
-			return new HashCode(HashCodeType.Crc32Hash, Hash);
+			return new HashCode(HashCodeType.Crc32Hash, BitConverter.GetBytes(_hash));
 		}
 	}
 }
