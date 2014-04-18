@@ -16,17 +16,17 @@ namespace DuplicateFileReporter.Commands
 		{
 			//Get all files in this directory
 			var files = (from f in Directory.GetFiles(path)
-			             let result = (from b in blacklist
-			                           where f.Contains(b)
-			                           select b).Count()
-			             where result == 0
-			             select f).ToList();
+							 let result = (from b in blacklist
+												where f.Contains(b)
+												select b).Count()
+							 where result == 0
+							 select f).ToList();
 
 			SendNotification(Globals.LogInfoNotification, "Adding: " + path + " to search path");
 
 			//Hydrate the proxy
 			var internalFiles = (from f in files
-								 select new InternalFile(new Uri(FileUriPrefix + f))).ToList();
+										select new InternalFile(new Uri(FileUriPrefix + f))).ToList();
 
 			//Hydrate all subdirectories
 			var subDirectories = Directory.GetDirectories(path);
