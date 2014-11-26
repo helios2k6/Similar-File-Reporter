@@ -4,6 +4,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>--path "Z:\Videos\Anime\Monogatari Series" --use-fnv-hash --use-crc32-hash --output-format JSON --output "D:\Andrew\Documents\Programming Projects\C-Sharp\Duplicate File Reporter\output.txt"</StartArguments>
+    <StartArguments>--path "Z:\Videos\Anime\Monogatari Series" --use-crc32-hash --output "D:\Andrew\Documents\Programming Projects\C-Sharp\Duplicate File Reporter\output.txt"</StartArguments>
   </PropertyGroup>
 </Project>

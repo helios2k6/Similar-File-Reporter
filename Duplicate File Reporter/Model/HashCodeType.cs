@@ -4,6 +4,7 @@ namespace DuplicateFileReporter.Model
     {
         Crc32Hash,
         Fnv1A32Hash,
-        Fnv1A64Hash
+        Fnv1A64Hash,
+        SampleHash,
     }
 }

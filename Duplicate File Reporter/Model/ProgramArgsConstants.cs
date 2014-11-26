@@ -12,6 +12,7 @@ namespace DuplicateFileReporter.Model
         public static readonly string UseStringClusterAnalysisArg = "--use-name-analysis";
         public static readonly string UseFnvHash = "--use-fnv-hash";
         public static readonly string UseCrc32Hash = "--use-crc32-hash";
+        public static readonly string UseQuickSampleHash = "--use-sample-hash";
         public static readonly string OutputArg = "--output";
         public static readonly string OutputFormatArg = "--output-format";
 
@@ -21,6 +22,7 @@ namespace DuplicateFileReporter.Model
         public static readonly string UseStringClusterAnalysisArgHelpString = "Use file name similarity to cluster possible file duplicates";
         public static readonly string UseFnvHashHelpString = "Use the FNV-1a hash to detect file duplicates";
         public static readonly string UseCrc32HashHelpString = "Use the CRC-32 hash to detect file duplicates";
+        public static readonly string UseQuickSampleHashString = "Use a quick sampling hash to detect file duplicates";
         public static readonly string OutputArgHelpString = "Output file to print results to";
 
         public static readonly string OutputFormatArgHelpString =
@@ -39,6 +41,7 @@ namespace DuplicateFileReporter.Model
                     UseStringClusterAnalysisArg,
                     UseFnvHash,
                     UseCrc32Hash,
+                    UseQuickSampleHash,
                     OutputArg,
                     OutputFormatArg
                 };
@@ -56,6 +59,7 @@ namespace DuplicateFileReporter.Model
                             {UseStringClusterAnalysisArg, UseStringClusterAnalysisArgHelpString},
                             {UseFnvHash, UseFnvHashHelpString},
                             {UseCrc32Hash, UseCrc32HashHelpString},
+                            {UseQuickSampleHash, UseQuickSampleHashString},
                             {HelpArg, HelpArgHelpString},
                             {OutputArg, OutputArgHelpString},
                             {OutputFormatArg, OutputFormatArgHelpString},

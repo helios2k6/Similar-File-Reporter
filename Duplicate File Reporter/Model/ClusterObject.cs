@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 
 namespace DuplicateFileReporter.Model
 {
-    public class ClusterObject
+    public sealed class ClusterObject
     {
         private static volatile int _idIncrementer;
 
@@ -29,5 +30,18 @@ namespace DuplicateFileReporter.Model
         }
 
         public int Count { get { return _files.Count; } }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine("Cluster ID: " + Id);
+            foreach(var file in Files)
+            {
+                builder.AppendLine(file.ToString());
+            }
+
+            return builder.ToString();
+        }
     }
 }

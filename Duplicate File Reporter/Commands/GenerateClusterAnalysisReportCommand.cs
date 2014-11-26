@@ -22,7 +22,7 @@ namespace DuplicateFileReporter.Commands
 
             foreach (var g in groups)
             {
-                var report = new Report { Id = Report.GetNextId(), Type = ReportTypeEnum.FileNameAnalysisReport, Cluster = g };
+                var report = new Report { Id = Report.GetNextId(), ReportType = ReportType.FileNameAnalysisReport, Cluster = g };
                 reportProxy.AddReport(report);
             }
         }

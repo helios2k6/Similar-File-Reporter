@@ -1,6 +1,8 @@
 ﻿using DuplicateFileReporter.Model;
 using PureMVC.Interfaces;
 using PureMVC.Patterns;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,74 +11,113 @@ namespace DuplicateFileReporter.Commands
 {
     public sealed class HashFilesCommand : SimpleCommand
     {
-        private void HashFileFnv(InternalFile file)
+        private Task HashFileFnvAsync(InternalFile file)
         {
-            SendNotification(Globals.LogInfoNotification, "Using FNV-1a hash on " + file);
-
-            var digest = new FnvMessageDigest();
-            using (Stream stream = File.OpenRead(file.GetPath()))
+            return Task.Factory.StartNew(() =>
             {
-                digest.Update(stream);
+                SendNotification(Globals.LogInfoNotification, "Using FNV-1a hash on " + file);
+                var digest = new FnvMessageDigest();
+                using (Stream stream = File.OpenRead(file.GetPath()))
+                {
+                    digest.Update(stream);
+                }
+                
+                digest.DoFinal();
+                var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
+                hashProxy.AddFileHashEntry(digest, file);
+            });
+        }
+
+        private Task HashFileCrc32Async(InternalFile file)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                SendNotification(Globals.LogInfoNotification, "Using CRC-32 hash on " + file);
+
+                var digest = new Crc32MessageDigest();
+                using (Stream stream = File.OpenRead(file.GetPath()))
+                {
+                    digest.ComputeHash(stream);
+                }
+
+                var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
+                hashProxy.AddFileHashEntry(digest, file);
+            });
+        }
+
+        private void AddQuickSampleDigest(QuickSampleMessageDigest digest)
+        {
+            var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
+            hashProxy.AddFileHashEntry(digest, digest.File);
+        }
+
+        private IEnumerable<QuickSampleMessageDigest> GenerateSampleDigests()
+        {
+            SendNotification(Globals.LogInfoNotification, "Sampling Files");
+            var fileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
+            var files = fileProxy.GetListOfFiles();
+
+            return files.Select(t => new QuickSampleMessageDigest(t));
+        }
+
+        private IEnumerable<QuickSampleMessageDigest> FilterUniqueSampleDigests(IEnumerable<QuickSampleMessageDigest> digests)
+        {
+            var groups = new Dictionary<HashCode, ISet<QuickSampleMessageDigest>>();
+
+            foreach(var digest in digests)
+            {
+                SendNotification(Globals.LogInfoNotification, "Sampling file: " + digest.File.GetCleanedFileName());
+
+                ISet<QuickSampleMessageDigest> group;
+                if(groups.TryGetValue(digest.GetHash(), out group) == false)
+                {
+                    group = new HashSet<QuickSampleMessageDigest>();
+                    groups[digest.GetHash()] = group;
+                }
+
+                group.Add(digest);
             }
 
-            digest.DoFinal();
-
-            var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
-            hashProxy.AddFileHashEntry(digest, file);
+            return from g in groups
+                   where g.Value.Count > 1
+                   from digest in g.Value
+                   select digest;
         }
 
-        private void HashFileCrc32(InternalFile file)
+        private void ProcessFiles(IEnumerable<QuickSampleMessageDigest> digests)
         {
-            SendNotification(Globals.LogInfoNotification, "Using CRC-32 hash on " + file);
+            var listOfTasks = new List<Task>();
+            var args = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy).Args;
 
-            var digest = new Crc32MessageDigest();
-            using (Stream stream = File.OpenRead(file.GetPath()))
+            foreach (var digest in digests)
             {
-                digest.ComputeHash(stream);
+                if (args.UseQuickSampleHash)
+                {
+                    AddQuickSampleDigest(digest);
+                }
+
+                if (args.UseFnvHash)
+                {
+                    listOfTasks.Add(HashFileFnvAsync(digest.File));
+                }
+
+                if (args.UseCrc32Hash)
+                {
+                    listOfTasks.Add(HashFileCrc32Async(digest.File));
+                }
             }
 
-            var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
-            hashProxy.AddFileHashEntry(digest, file);
-        }
-
-        private void ProcessFnvHash()
-        {
-            var argProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
-            if (!argProxy.Args.UseFnvHash) return;
-
-            var internalFileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
-            var listOfFiles = internalFileProxy.GetListOfFiles();
-
-            Parallel.ForEach(listOfFiles, e => HashFileFnv(e));
-        }
-
-        private void ProcessCrc32Hash()
-        {
-            var argProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
-            if (!argProxy.Args.UseCrc32Hash) return;
-
-            var internalFileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
-            var listOfFiles = internalFileProxy.GetListOfFiles();
-
-            Parallel.ForEach(listOfFiles, e => HashFileCrc32(e));
-        }
-
-        private IEnumerable<ISet<InternalFile>> GenerateSuspectedClusters()
-        {
-            return null;
+            Task.WaitAll(listOfTasks.ToArray());
         }
 
         public override void Execute(INotification notification)
         {
-            var listOfTasks = new List<Task> 
-            { 
-                Task.Factory.StartNew(ProcessFnvHash),
-                Task.Factory.StartNew(ProcessCrc32Hash)
-            };
-
-            foreach (var t in listOfTasks)
+            var argProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
+            if (argProxy.Args.UseCrc32Hash || argProxy.Args.UseFnvHash || argProxy.Args.UseQuickSampleHash)
             {
-                t.Wait();
+                var sampleDigests = GenerateSampleDigests();
+                var suspectedDuplicateFileSets = FilterUniqueSampleDigests(sampleDigests);
+                ProcessFiles(suspectedDuplicateFileSets);
             }
 
             var fileHashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);

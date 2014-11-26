@@ -3,12 +3,14 @@ using System.Collections.Generic;
 
 namespace DuplicateFileReporter.Model
 {
-    public class ProgramArgs
+    public sealed class ProgramArgs
     {
-        public ProgramArgs(string path,
+        public ProgramArgs(
+            string path,
             bool useStringClusterAnalysis,
             bool useFnvHash,
-            bool useMd5Hash,
+            bool useCrc32Hash,
+            bool useQuickSampleHash,
             IEnumerable<string> blacklist,
             string outputFile,
             string outputFileFormat,
@@ -16,8 +18,9 @@ namespace DuplicateFileReporter.Model
         {
             Path = path;
             UseFnvHash = useFnvHash;
-            UseCrc32Hash = useMd5Hash;
+            UseCrc32Hash = useCrc32Hash;
             UseStringClusterAnalysis = useStringClusterAnalysis;
+            UseQuickSampleHash = useQuickSampleHash;
             Blacklist = blacklist;
             OutputFile = outputFile;
             OutputFileFormat = (OutputReportType)Enum.Parse(typeof(OutputReportType), outputFileFormat.ToUpper());
@@ -28,6 +31,7 @@ namespace DuplicateFileReporter.Model
         public bool UseFnvHash { get; private set; }
         public bool UseCrc32Hash { get; private set; }
         public bool UseStringClusterAnalysis { get; private set; }
+        public bool UseQuickSampleHash { get; private set; }
         public IEnumerable<string> Blacklist { get; private set; }
         public string OutputFile { get; private set; }
         public OutputReportType OutputFileFormat { get; private set; }

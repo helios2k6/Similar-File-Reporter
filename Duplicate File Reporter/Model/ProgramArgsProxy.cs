@@ -47,14 +47,21 @@ namespace DuplicateFileReporter.Model
             blacklistCollection.Add("DuplicateFileReporter");
 
             var userWantsHelp = parserDictionary.ContainsKey(ProgramArgsConstants.HelpArg);
-
             var useStringClusterAnalysis = parserDictionary.ContainsKey(ProgramArgsConstants.UseStringClusterAnalysisArg);
-
             var useFnv = parserDictionary.ContainsKey(ProgramArgsConstants.UseFnvHash);
-
             var useCrc32 = parserDictionary.ContainsKey(ProgramArgsConstants.UseCrc32Hash);
+            var useQuickSampleHash = parserDictionary.ContainsKey(ProgramArgsConstants.UseQuickSampleHash);
 
-            Args = new ProgramArgs(path, useStringClusterAnalysis, useFnv, useCrc32, blacklistCollection, outputFile, outputFileFormat, userWantsHelp);
+            Args = new ProgramArgs(
+                path, 
+                useStringClusterAnalysis, 
+                useFnv, 
+                useCrc32, 
+                useQuickSampleHash, 
+                blacklistCollection,
+                outputFile, 
+                outputFileFormat, 
+                userWantsHelp);
         }
 
         public ProgramArgs Args { get; private set; }

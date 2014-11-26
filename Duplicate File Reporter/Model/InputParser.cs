@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DuplicateFileReporter.Model
 {
-    public class InputParser
+    public sealed class InputParser
     {
         private readonly IDictionary<string, IList<string>> _argCollector = new Dictionary<string, IList<string>>();
 

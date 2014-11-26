@@ -80,6 +80,7 @@
     <Compile Include="Model\ProgramArgs.cs" />
     <Compile Include="Model\ProgramArgsConstants.cs" />
     <Compile Include="Model\ProgramArgsProxy.cs" />
+    <Compile Include="Model\QuickSampleMessageDigest.cs" />
     <Compile Include="Model\Report.cs" />
     <Compile Include="Model\ReportProxy.cs" />
     <Compile Include="Model\ReportTypeEnum.cs" />

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace DuplicateFileReporter.Model
 {
-    public class InternalFile
+    public sealed class InternalFile
     {
         private const string Deliminators = @"[~`_-]";
 

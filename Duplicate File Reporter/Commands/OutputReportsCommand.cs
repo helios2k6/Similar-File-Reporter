@@ -17,20 +17,10 @@ namespace DuplicateFileReporter.Commands
             var reportProxy = Facade.RetrieveProxy<ReportProxy>(Globals.ReportProxy);
             var builder = new StringBuilder();
 
-            builder.Append("Begin Reports Dump").AppendLine();
             foreach (var r in reportProxy.Reports)
             {
-                builder.Append("****Report ").Append(r.Id).Append("***").AppendLine();
-                builder.Append("Report Type: ").Append(r.Type).AppendLine();
-
-                foreach (var f in r.Cluster.Files)
-                {
-                    builder.Append(f).AppendLine();
-                }
-                builder.Append("===End of Report===").AppendLine().AppendLine();
+                builder.AppendLine(r.ToString());
             }
-
-            builder.Append("End of Report Dump");
 
             return builder.ToString();
         }

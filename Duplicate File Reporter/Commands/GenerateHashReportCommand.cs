@@ -2,6 +2,7 @@
 using DuplicateFileReporter.Model;
 using PureMVC.Interfaces;
 using PureMVC.Patterns;
+using System;
 
 namespace DuplicateFileReporter.Commands
 {
@@ -15,9 +16,7 @@ namespace DuplicateFileReporter.Commands
                           where c.Value.Count > 1
                           select c).ToList();
 
-            var reportProxy = Facade.RetrieveProxy(Globals.ReportProxy) as ReportProxy;
-            if (reportProxy == null) Globals.Fail("Could not get ReportProxy");
-
+            var reportProxy = Facade.RetrieveProxy<ReportProxy>(Globals.ReportProxy);
             SendNotification(Globals.LogInfoNotification, "Analyzing clusters based on hash codes for files. There are " + groups.Count() + " clusters to Analyze");
 
             foreach (var g in groups)
@@ -28,11 +27,16 @@ namespace DuplicateFileReporter.Commands
                 switch (hashCode.HashCodeType)
                 {
                     case HashCodeType.Crc32Hash:
-                        report.Type = ReportTypeEnum.Crc32HashReport;
+                        report.ReportType = ReportType.Crc32HashReport;
                         break;
                     case HashCodeType.Fnv1A32Hash:
-                        report.Type = ReportTypeEnum.Fnv32HashReport;
+                        report.ReportType = ReportType.Fnv32HashReport;
                         break;
+                    case HashCodeType.SampleHash:
+                        report.ReportType = ReportType.QuickSampleReport;
+                        break;
+                    default:
+                        throw new InvalidOperationException("Unknown hash report type");
                 }
 
                 reportProxy.AddReport(report);

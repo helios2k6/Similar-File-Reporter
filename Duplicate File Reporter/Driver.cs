@@ -54,7 +54,7 @@ namespace DuplicateFileReporter
             var programArgs = facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy).Args;
             var listOfTasks = new List<Task>();
 
-            if (programArgs.UseCrc32Hash || programArgs.UseFnvHash)
+            if (programArgs.UseCrc32Hash || programArgs.UseFnvHash || programArgs.UseQuickSampleHash)
             {
                 listOfTasks.Add(Task.Factory.StartNew(SendHashFilesNotification));
             }
