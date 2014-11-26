@@ -51,7 +51,7 @@ namespace DuplicateFileReporter
             facade.SendNotification(Globals.LogInfoNotification, "Searching for files to analyze");
             facade.SendNotification(Globals.HydrateInternalFileProxyCommand);
 
-            var programArgs = ((ProgramArgsProxy)facade.RetrieveProxy(Globals.ProgramArgsProxy)).Args;
+            var programArgs = facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy).Args;
             var listOfTasks = new List<Task>();
 
             if (programArgs.UseCrc32Hash || programArgs.UseFnvHash)

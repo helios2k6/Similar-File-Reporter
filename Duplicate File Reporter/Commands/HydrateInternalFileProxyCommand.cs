@@ -43,20 +43,15 @@ namespace DuplicateFileReporter.Commands
 
         public override void Execute(INotification notification)
         {
-            var programArgsProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
-            if (programArgsProxy == null) Globals.Fail("Cannot hydrate files. Couldn't cast ProgramArgsProxy");
-
+            var programArgsProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
             var path = programArgsProxy.Args.Path;
 
             if (!Directory.Exists(path)) Globals.Fail(("Cannot find path " + path));
 
             var allFiles = HydrateDirectory(path, programArgsProxy.Args.Blacklist.ToList());
-
-            var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
-            if (internalFileProxy == null) Globals.Fail("Could not case Internal File Proxy " + path);
+            var internalFileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
 
             internalFileProxy.AddFiles(allFiles);
-
             internalFileProxy.SealProxy();
         }
     }

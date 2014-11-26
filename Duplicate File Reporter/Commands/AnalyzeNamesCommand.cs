@@ -13,9 +13,7 @@ namespace DuplicateFileReporter.Commands
 
         private bool EvaluateFileMembershipInCluster(InternalFile file, ClusterObject cluster, out double result)
         {
-            var stringComparisonToolsProxy = Facade.RetrieveProxy(Globals.StringComparisonToolsProxy) as StringComparisonToolsProxy;
-
-            if (stringComparisonToolsProxy == null) Globals.Fail("Could not cast StringComparisonToolsProxy");
+            var stringComparisonToolsProxy = Facade.RetrieveProxy<StringComparisonToolsProxy>(Globals.StringComparisonToolsProxy);
 
             var avg = 0.0;
             var count = 0;
@@ -41,11 +39,8 @@ namespace DuplicateFileReporter.Commands
 
         public override void Execute(INotification notification)
         {
-            var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
-            var fileNameClusterProxy = Facade.RetrieveProxy(Globals.FileNameClusterProxy) as FileNameClusterProxy;
-
-            if (internalFileProxy == null || fileNameClusterProxy == null)
-                Globals.Fail("Could not cast InternalFileProxy or FileNameClusterProxy");
+            var internalFileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
+            var fileNameClusterProxy = Facade.RetrieveProxy<FileNameClusterProxy>(Globals.FileNameClusterProxy);
 
             /*
              * Cluster Analysis Proceedure

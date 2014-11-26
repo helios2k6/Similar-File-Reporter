@@ -9,11 +9,8 @@ namespace DuplicateFileReporter.Commands
     {
         public override void Execute(INotification notification)
         {
-            var fileNameClusterProxy = Facade.RetrieveProxy(Globals.FileNameClusterProxy) as FileNameClusterProxy;
-            if (fileNameClusterProxy == null) Globals.Fail("Could not get FileNameClusterProxy");
-
+            var fileNameClusterProxy = Facade.RetrieveProxy<FileNameClusterProxy>(Globals.FileNameClusterProxy);
             var clusters = fileNameClusterProxy.FileNameClusters;
-
             var groups = (from c in clusters
                           where c.Count > 1
                           select c).ToList();

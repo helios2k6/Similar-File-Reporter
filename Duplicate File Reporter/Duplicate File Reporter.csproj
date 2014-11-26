@@ -66,6 +66,7 @@
     <Compile Include="Model\ClusterObject.cs" />
     <Compile Include="Model\Crc32MessageDigest.cs" />
     <Compile Include="Model\EnumExtensions.cs" />
+    <Compile Include="Model\FacadeExtensions.cs" />
     <Compile Include="Model\FileHashProxy.cs" />
     <Compile Include="Model\FileNameClusterProxy.cs" />
     <Compile Include="Model\FnvMessageDigest.cs" />

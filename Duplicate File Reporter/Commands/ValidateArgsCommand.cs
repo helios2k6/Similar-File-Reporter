@@ -16,10 +16,7 @@ namespace DuplicateFileReporter.Commands
 
         public override void Execute(INotification notification)
         {
-            var programArgsProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
-
-            if (programArgsProxy == null) Globals.Fail("Could not get ProgramArgsProxy");
-
+            var programArgsProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
             if (programArgsProxy.Args.Help)
             {
                 Facade.SendNotification(Globals.PrintHelpCommand);

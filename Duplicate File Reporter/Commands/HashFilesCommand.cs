@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using DuplicateFileReporter.Model;
+﻿using DuplicateFileReporter.Model;
 using PureMVC.Interfaces;
 using PureMVC.Patterns;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using System;
 
 namespace DuplicateFileReporter.Commands
 {
@@ -23,10 +21,7 @@ namespace DuplicateFileReporter.Commands
 
             digest.DoFinal();
 
-            var hashProxy = Facade.RetrieveProxy(Globals.FileHashProxy) as FileHashProxy;
-
-            if (hashProxy == null) Globals.Fail("Could not get Hash Proxy");
-
+            var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
             hashProxy.AddFileHashEntry(digest, file);
         }
 
@@ -40,19 +35,16 @@ namespace DuplicateFileReporter.Commands
                 digest.ComputeHash(stream);
             }
 
-            var hashProxy = Facade.RetrieveProxy(Globals.FileHashProxy) as FileHashProxy;
-
-            if (hashProxy == null) Globals.Fail("Could not get Hash Proxy");
-
+            var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
             hashProxy.AddFileHashEntry(digest, file);
         }
 
         private void ProcessFnvHash()
         {
-            var argProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
+            var argProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
             if (!argProxy.Args.UseFnvHash) return;
 
-            var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
+            var internalFileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
             var listOfFiles = internalFileProxy.GetListOfFiles();
 
             Parallel.ForEach(listOfFiles, e => HashFileFnv(e));
@@ -60,13 +52,18 @@ namespace DuplicateFileReporter.Commands
 
         private void ProcessCrc32Hash()
         {
-            var argProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
+            var argProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
             if (!argProxy.Args.UseCrc32Hash) return;
 
-            var internalFileProxy = Facade.RetrieveProxy(Globals.InternalFileProxyName) as InternalFileProxy;
+            var internalFileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
             var listOfFiles = internalFileProxy.GetListOfFiles();
 
             Parallel.ForEach(listOfFiles, e => HashFileCrc32(e));
+        }
+
+        private IEnumerable<ISet<InternalFile>> GenerateSuspectedClusters()
+        {
+            return null;
         }
 
         public override void Execute(INotification notification)
@@ -82,8 +79,7 @@ namespace DuplicateFileReporter.Commands
                 t.Wait();
             }
 
-            var fileHashProxy = Facade.RetrieveProxy(Globals.FileHashProxy) as FileHashProxy;
-
+            var fileHashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
             fileHashProxy.SealProxy();
         }
     }

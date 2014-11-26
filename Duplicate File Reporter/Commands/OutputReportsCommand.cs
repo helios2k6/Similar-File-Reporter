@@ -14,13 +14,10 @@ namespace DuplicateFileReporter.Commands
     {
         private string OutputCommandsToFlat()
         {
-            var reportProxy = Facade.RetrieveProxy(Globals.ReportProxy) as ReportProxy;
-            if (reportProxy == null) Globals.Fail("Could not get ReportProxy");
-
+            var reportProxy = Facade.RetrieveProxy<ReportProxy>(Globals.ReportProxy);
             var builder = new StringBuilder();
 
             builder.Append("Begin Reports Dump").AppendLine();
-
             foreach (var r in reportProxy.Reports)
             {
                 builder.Append("****Report ").Append(r.Id).Append("***").AppendLine();
@@ -40,9 +37,7 @@ namespace DuplicateFileReporter.Commands
 
         private string OutputCommandsToJson()
         {
-            var reportProxy = Facade.RetrieveProxy(Globals.ReportProxy) as ReportProxy;
-            if (reportProxy == null) Globals.Fail("Could not get ReportProxy");
-
+            var reportProxy = Facade.RetrieveProxy<ReportProxy>(Globals.ReportProxy);
             var builder = new StringBuilder();
 
             foreach (var r in reportProxy.Reports)
@@ -55,9 +50,7 @@ namespace DuplicateFileReporter.Commands
 
         private string OutputCommandsToXml()
         {
-            var reportProxy = Facade.RetrieveProxy(Globals.ReportProxy) as ReportProxy;
-            if (reportProxy == null) Globals.Fail("Could not get ReportProxy");
-
+            var reportProxy = Facade.RetrieveProxy<ReportProxy>(Globals.ReportProxy);
             var builder = new StringBuilder();
             var stringWriter = new StringWriter(builder);
             var serializer = new XmlSerializer(typeof(Report));
@@ -76,10 +69,8 @@ namespace DuplicateFileReporter.Commands
 
         public override void Execute(INotification notification)
         {
-            var programArgsProxy = Facade.RetrieveProxy(Globals.ProgramArgsProxy) as ProgramArgsProxy;
-
+            var programArgsProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
             var typeOfCommand = programArgsProxy.Args.OutputFileFormat;
-
             var serializationResult = string.Empty;
 
             switch (typeOfCommand)
