@@ -31,16 +31,17 @@ namespace DuplicateFileReporter.Model
         {
             get
             {
-                return new List<string> { 
-					PathArg, 
-					BlacklistArg, 
-					HelpArg, 
-					UseStringClusterAnalysisArg ,
-					UseFnvHash,
-					UseCrc32Hash,
-					OutputArg,
-					OutputFormatArg
-				};
+                return new List<string> 
+                { 
+                    PathArg, 
+                    BlacklistArg, 
+                    HelpArg, 
+                    UseStringClusterAnalysisArg,
+                    UseFnvHash,
+                    UseCrc32Hash,
+                    OutputArg,
+                    OutputFormatArg
+                };
             }
         }
 
@@ -49,16 +50,16 @@ namespace DuplicateFileReporter.Model
             get
             {
                 return new Dictionary<string, string>
-				       	{
-							{PathArg, PathArgHelpString},
-							{BlacklistArg, BlacklistArgHelpString},
-							{UseStringClusterAnalysisArg, UseStringClusterAnalysisArgHelpString},
-							{UseFnvHash, UseFnvHashHelpString},
-							{UseCrc32Hash, UseCrc32HashHelpString},
-							{HelpArg, HelpArgHelpString},
-							{OutputArg, OutputArgHelpString},
-							{OutputFormatArg, OutputFormatArgHelpString},
-				       	};
+                        {
+                            {PathArg, PathArgHelpString},
+                            {BlacklistArg, BlacklistArgHelpString},
+                            {UseStringClusterAnalysisArg, UseStringClusterAnalysisArgHelpString},
+                            {UseFnvHash, UseFnvHashHelpString},
+                            {UseCrc32Hash, UseCrc32HashHelpString},
+                            {HelpArg, HelpArgHelpString},
+                            {OutputArg, OutputArgHelpString},
+                            {OutputFormatArg, OutputFormatArgHelpString},
+                        };
             }
         }
     }

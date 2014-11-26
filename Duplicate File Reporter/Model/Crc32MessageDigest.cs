@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace DuplicateFileReporter.Model
 {
-    using System;
-    using System.Security.Cryptography;
-
     public class Crc32MessageDigest : HashAlgorithm, IMessageDigest
     {
         public const string Crc32MessageDigestHash = "CRC-32 Message Digest Hash";
@@ -71,17 +70,25 @@ namespace DuplicateFileReporter.Model
         private static UInt32[] InitializeTable(UInt32 polynomial)
         {
             if (polynomial == DefaultPolynomial && _defaultTable != null)
+            {
                 return _defaultTable;
+            }
 
             var createTable = new UInt32[256];
             for (var i = 0; i < 256; i++)
             {
                 var entry = (UInt32)i;
                 for (var j = 0; j < 8; j++)
+                {
                     if ((entry & 1) == 1)
+                    {
                         entry = (entry >> 1) ^ polynomial;
+                    }
                     else
+                    {
                         entry = entry >> 1;
+                    }
+                }
                 createTable[i] = entry;
             }
 
@@ -95,21 +102,24 @@ namespace DuplicateFileReporter.Model
         {
             var crc = seed;
             for (var i = start; i < size; i++)
+            {
                 unchecked
                 {
                     crc = (crc >> 8) ^ table[buffer[i] ^ crc & 0xff];
                 }
+            }
             return crc;
         }
 
         private static byte[] UInt32ToBigEndianBytes(UInt32 x)
         {
-            return new[] {
-			(byte)((x >> 24) & 0xff),
-			(byte)((x >> 16) & 0xff),
-			(byte)((x >> 8) & 0xff),
-			(byte)(x & 0xff)
-		};
+            return new[] 
+            {
+                (byte)((x >> 24) & 0xff),
+                (byte)((x >> 16) & 0xff),
+                (byte)((x >> 8) & 0xff),
+                (byte)(x & 0xff)
+            };
         }
 
         public string GetDigestName()

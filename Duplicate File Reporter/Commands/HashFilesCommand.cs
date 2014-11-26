@@ -90,10 +90,10 @@ namespace DuplicateFileReporter.Commands
         public override void Execute(INotification notification)
         {
             var listOfTasks = new List<Task> 
-			{ 
-				Task.Factory.StartNew(ProcessFnvHash),
-				Task.Factory.StartNew(ProcessCrc32Hash)
-			};
+            { 
+                Task.Factory.StartNew(ProcessFnvHash),
+                Task.Factory.StartNew(ProcessCrc32Hash)
+            };
 
             foreach (var t in listOfTasks)
             {
