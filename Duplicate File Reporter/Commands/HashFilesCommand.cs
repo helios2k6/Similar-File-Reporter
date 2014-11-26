@@ -84,9 +84,8 @@ namespace DuplicateFileReporter.Commands
                    select digest;
         }
 
-        private void ProcessFiles(IEnumerable<QuickSampleMessageDigest> digests)
+        private async Task ProcessFiles(IEnumerable<QuickSampleMessageDigest> digests)
         {
-            var listOfTasks = new List<Task>();
             var args = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy).Args;
 
             foreach (var digest in digests)
@@ -98,16 +97,14 @@ namespace DuplicateFileReporter.Commands
 
                 if (args.UseFnvHash)
                 {
-                    listOfTasks.Add(HashFileFnvAsync(digest.File));
+                    await HashFileFnvAsync(digest.File);
                 }
 
                 if (args.UseCrc32Hash)
                 {
-                    listOfTasks.Add(HashFileCrc32Async(digest.File));
+                    await HashFileCrc32Async(digest.File);
                 }
             }
-
-            Task.WaitAll(listOfTasks.ToArray());
         }
 
         public override void Execute(INotification notification)
@@ -117,7 +114,7 @@ namespace DuplicateFileReporter.Commands
             {
                 var sampleDigests = GenerateSampleDigests();
                 var suspectedDuplicateFileSets = FilterUniqueSampleDigests(sampleDigests);
-                ProcessFiles(suspectedDuplicateFileSets);
+                ProcessFiles(suspectedDuplicateFileSets).Wait();
             }
 
             var fileHashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
