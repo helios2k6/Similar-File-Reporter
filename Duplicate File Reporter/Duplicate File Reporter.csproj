@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DuplicateFileReporter</RootNamespace>
-    <AssemblyName>Duplicate File Reporter</AssemblyName>
+    <AssemblyName>DuplicateFileReporter</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

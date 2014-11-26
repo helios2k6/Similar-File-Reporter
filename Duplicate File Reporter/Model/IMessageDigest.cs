@@ -2,9 +2,9 @@
 
 namespace DuplicateFileReporter.Model
 {
-	public interface IMessageDigest
-	{
-		string GetDigestName();
-		HashCode GetHash();
-	}
+    public interface IMessageDigest
+    {
+        string GetDigestName();
+        HashCode GetHash();
+    }
 }
