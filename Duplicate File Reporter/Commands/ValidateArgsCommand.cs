@@ -7,7 +7,7 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class ValidateArgsCommand : SimpleCommand
+    public sealed class ValidateArgsCommand : SimpleCommand
     {
         private static bool IsValidDirectory(string path)
         {

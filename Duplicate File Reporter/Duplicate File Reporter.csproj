@@ -60,7 +60,7 @@
     <Compile Include="Commands\LogCommand.cs" />
     <Compile Include="Commands\OutputReportsCommand.cs" />
     <Compile Include="Commands\PrintHelpCommand.cs" />
-    <Compile Include="Commands\StartUpCommand.cs" />
+    <Compile Include="Driver.cs" />
     <Compile Include="Commands\ValidateArgsCommand.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Model\ClusterObject.cs" />

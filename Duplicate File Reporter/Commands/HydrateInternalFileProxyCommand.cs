@@ -8,7 +8,7 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class HydrateInternalFileProxyCommand : SimpleCommand
+    public sealed class HydrateInternalFileProxyCommand : SimpleCommand
     {
         private const string FileUriPrefix = "file:///";
 

@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using DuplicateFileReporter.Commands;
 using DuplicateFileReporter.Model;
 using PureMVC.Patterns;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DuplicateFileReporter.Commands
+namespace DuplicateFileReporter
 {
-    public class StartUpCommand
+    public sealed class Driver
     {
         private static void SendAnalyzeNamesNotification()
         {

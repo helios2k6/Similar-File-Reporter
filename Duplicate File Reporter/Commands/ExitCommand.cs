@@ -5,22 +5,16 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class ExitCommand : SimpleCommand
+    public sealed class ExitCommand : SimpleCommand
     {
-        private void CleanUp()
-        {
-        }
-
         private void ExitFail()
         {
-            CleanUp();
             Facade.SendNotification(Globals.LogErrorNotification, "Exit Failure");
             Environment.Exit(1);
         }
 
         private void ExitSuccess()
         {
-            CleanUp();
             Facade.SendNotification(Globals.LogInfoNotification, "Exit Success");
             Environment.Exit(0);
         }

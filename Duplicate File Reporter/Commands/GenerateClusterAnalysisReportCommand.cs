@@ -5,7 +5,7 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class GenerateClusterAnalysisReportCommand : SimpleCommand
+    public sealed class GenerateClusterAnalysisReportCommand : SimpleCommand
     {
         public override void Execute(INotification notification)
         {

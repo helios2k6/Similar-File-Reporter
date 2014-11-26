@@ -1,12 +1,11 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 using DuplicateFileReporter.Model;
 using PureMVC.Interfaces;
 using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class GenerateHashReportCommand : SimpleCommand
+    public sealed class GenerateHashReportCommand : SimpleCommand
     {
         public override void Execute(INotification notification)
         {

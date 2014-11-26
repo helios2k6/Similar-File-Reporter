@@ -6,7 +6,7 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class PrintHelpCommand : SimpleCommand
+    public sealed class PrintHelpCommand : SimpleCommand
     {
         private static string GetPrologue()
         {

@@ -7,11 +7,11 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class LogCommand : SimpleCommand
+    public sealed class LogCommand : SimpleCommand
     {
         private readonly object _lockObject = new object();
 
-        public void LogError(string msg)
+        private void LogError(string msg)
         {
             var builder = new StringBuilder();
 
@@ -25,7 +25,7 @@ namespace DuplicateFileReporter.Commands
             }
         }
 
-        public void LogInfo(string msg)
+        private void LogInfo(string msg)
         {
             var builder = new StringBuilder();
 

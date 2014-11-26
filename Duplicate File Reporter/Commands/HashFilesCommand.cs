@@ -9,22 +9,13 @@ using System;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class HashFilesCommand : SimpleCommand
+    public sealed class HashFilesCommand : SimpleCommand
     {
-        public void HashFileFnv(object arg)
+        private void HashFileFnv(InternalFile file)
         {
-            var file = arg as InternalFile;
-
-            if (file == null)
-            {
-                Facade.SendNotification(Globals.LogErrorNotification, "Unable to hash file. Could not cast to internal file");
-                return;
-            }
-
             SendNotification(Globals.LogInfoNotification, "Using FNV-1a hash on " + file);
 
             var digest = new FnvMessageDigest();
-
             using (Stream stream = File.OpenRead(file.GetPath()))
             {
                 digest.Update(stream);
@@ -39,20 +30,11 @@ namespace DuplicateFileReporter.Commands
             hashProxy.AddFileHashEntry(digest, file);
         }
 
-        public void HashFileCrc32(object arg)
+        private void HashFileCrc32(InternalFile file)
         {
-            var file = arg as InternalFile;
-
-            if (file == null)
-            {
-                Facade.SendNotification(Globals.LogErrorNotification, "Unable to hash file. Could not cast to internal file");
-                return;
-            }
-
             SendNotification(Globals.LogInfoNotification, "Using CRC-32 hash on " + file);
 
             var digest = new Crc32MessageDigest();
-
             using (Stream stream = File.OpenRead(file.GetPath()))
             {
                 digest.ComputeHash(stream);

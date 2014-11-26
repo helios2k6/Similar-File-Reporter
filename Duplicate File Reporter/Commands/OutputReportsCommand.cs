@@ -10,7 +10,7 @@ using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
-    public class OutputReportsCommand : SimpleCommand
+    public sealed class OutputReportsCommand : SimpleCommand
     {
         private string OutputCommandsToFlat()
         {
