@@ -54,7 +54,7 @@ namespace DuplicateFileReporter.Commands
             var fileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
             var files = fileProxy.GetListOfFiles();
 
-            return files.Select(t => new QuickSampleMessageDigest(t)).Where(t => t.IsValidFile);
+            return files.Select(t => new QuickSampleMessageDigest(t));
         }
 
         private IEnumerable<QuickSampleMessageDigest> FilterUniqueSampleDigests(IEnumerable<QuickSampleMessageDigest> digests)
