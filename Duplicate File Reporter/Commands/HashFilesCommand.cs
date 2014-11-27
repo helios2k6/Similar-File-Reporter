@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace DuplicateFileReporter.Commands
 {
@@ -53,7 +54,7 @@ namespace DuplicateFileReporter.Commands
             var fileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
             var files = fileProxy.GetListOfFiles();
 
-            return files.Select(t => new QuickSampleMessageDigest(t));
+            return files.Select(t => new QuickSampleMessageDigest(t)).Where(t => t.IsValidFile);
         }
 
         private IEnumerable<QuickSampleMessageDigest> FilterUniqueSampleDigests(IEnumerable<QuickSampleMessageDigest> digests)
@@ -65,6 +66,18 @@ namespace DuplicateFileReporter.Commands
 
             SendNotification(Globals.LogInfoNotification, string.Format("Sampling {0} file(s)", numFiles));
 
+            Parallel.ForEach(digests, digest =>
+            {
+                long incrementedValue = Interlocked.Increment(ref hashedFiles);
+
+                digest.GetHash();
+
+                if (incrementedValue % 20 == 0)
+                {
+                    SendNotification(Globals.LogInfoNotification, string.Format("Sampled {0} files. {1} remaining", incrementedValue, numFiles - incrementedValue));
+                }
+            });
+
             foreach(var digest in digests)
             {
                 ISet<QuickSampleMessageDigest> group;
@@ -75,13 +88,6 @@ namespace DuplicateFileReporter.Commands
                 }
 
                 group.Add(digest);
-
-                hashedFiles++;
-
-                if(hashedFiles % 20 == 0)
-                {
-                    SendNotification(Globals.LogInfoNotification, string.Format("{0} files sampled. {1} files remaining.", hashedFiles, numFiles - hashedFiles));
-                }
             }
 
             return from g in groups

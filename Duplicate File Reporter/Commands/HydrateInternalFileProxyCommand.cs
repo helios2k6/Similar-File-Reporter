@@ -32,7 +32,7 @@ namespace DuplicateFileReporter.Commands
             {
                 var subdirectoryFiles = HydrateDirectory(sd, blacklist);
 
-                internalFiles.Concat(subdirectoryFiles);
+                internalFiles = internalFiles.Concat(subdirectoryFiles);
             }
 
             return internalFiles;

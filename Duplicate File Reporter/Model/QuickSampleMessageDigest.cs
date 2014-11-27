@@ -17,10 +17,13 @@ namespace DuplicateFileReporter.Model
 
         public InternalFile File { get { return _file; } }
 
+        public bool IsValidFile { get; private set; }
+
         public QuickSampleMessageDigest(InternalFile file)
         {
             _file = file;
             _lazyHashCode = new Lazy<HashCode>(CalculateHashCode);
+            IsValidFile = System.IO.File.Exists(file.FilePath);
         }
 
         public string GetDigestName()
@@ -35,6 +38,11 @@ namespace DuplicateFileReporter.Model
 
         private HashCode CalculateHashCode()
         {
+            if (IsValidFile == false)
+            {
+                return new HashCode(HashCodeType.SampleHash, new byte[0]);
+            }
+
             var sampledFile = SampleFile(_file);
             var sampleHashArray = BitConverter.GetBytes(sampledFile.SampleHash);
             var lengthArray = BitConverter.GetBytes(sampledFile.FileSize);
@@ -47,7 +55,6 @@ namespace DuplicateFileReporter.Model
             long sampleHash = 0;
             byte[] buffer = new byte[8]; //Size of Int64
             var fileInfo = new FileInfo(file.FilePath);
-
             if (fileInfo.Length > 0)
             {
                 using (var stream = System.IO.File.OpenRead(file.FilePath))
