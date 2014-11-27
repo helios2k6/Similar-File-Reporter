@@ -15,7 +15,6 @@ namespace DuplicateFileReporter.Commands
         {
             return Task.Factory.StartNew(() =>
             {
-                SendNotification(Globals.LogInfoNotification, "Using FNV-1a hash on " + file);
                 var digest = new FnvMessageDigest();
                 using (Stream stream = File.OpenRead(file.GetPath()))
                 {
@@ -32,8 +31,6 @@ namespace DuplicateFileReporter.Commands
         {
             return Task.Factory.StartNew(() =>
             {
-                SendNotification(Globals.LogInfoNotification, "Using CRC-32 hash on " + file);
-
                 var digest = new Crc32MessageDigest();
                 using (Stream stream = File.OpenRead(file.GetPath()))
                 {
@@ -53,7 +50,6 @@ namespace DuplicateFileReporter.Commands
 
         private IEnumerable<QuickSampleMessageDigest> GenerateSampleDigests()
         {
-            SendNotification(Globals.LogInfoNotification, "Sampling Files");
             var fileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
             var files = fileProxy.GetListOfFiles();
 
@@ -66,8 +62,6 @@ namespace DuplicateFileReporter.Commands
 
             foreach(var digest in digests)
             {
-                SendNotification(Globals.LogInfoNotification, "Sampling file: " + digest.File.GetCleanedFileName());
-
                 ISet<QuickSampleMessageDigest> group;
                 if(groups.TryGetValue(digest.GetHash(), out group) == false)
                 {
@@ -88,6 +82,10 @@ namespace DuplicateFileReporter.Commands
         {
             var args = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy).Args;
 
+            long hashedFiles = 0;
+            long numFiles = digests.LongCount();
+            SendNotification(Globals.LogInfoNotification, string.Format("Hashing {0} file(s)", numFiles));
+
             foreach (var digest in digests)
             {
                 if (args.UseQuickSampleHash)
@@ -104,7 +102,16 @@ namespace DuplicateFileReporter.Commands
                 {
                     await HashFileCrc32Async(digest.File);
                 }
+
+                hashedFiles++;
+
+                if(hashedFiles % 5 == 0)
+                {
+                    SendNotification(Globals.LogInfoNotification, string.Format("{0} file(s) hashed. {1} file(s) remaining", hashedFiles, numFiles - hashedFiles));
+                }
             }
+
+            SendNotification(Globals.LogInfoNotification, "Done hashing!");
         }
 
         public override void Execute(INotification notification)

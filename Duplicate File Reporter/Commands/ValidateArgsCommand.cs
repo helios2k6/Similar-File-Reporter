@@ -42,8 +42,11 @@ namespace DuplicateFileReporter.Commands
             {
                 Globals.Fail(programArgsProxy.Args.Path + " is not a valid directory");
             }
+            else if (programArgsProxy.Args.UseCrc32Hash)
+            {
+                Globals.Fail("CRC-32 Hash is currently broken. Use --use-sample-hash or --use-fnv-hash instead");
+            }
             else if (!programArgsProxy.Args.UseFnvHash 
-                && !programArgsProxy.Args.UseCrc32Hash 
                 && !programArgsProxy.Args.UseStringClusterAnalysis 
                 && !programArgsProxy.Args.UseQuickSampleHash)
             {

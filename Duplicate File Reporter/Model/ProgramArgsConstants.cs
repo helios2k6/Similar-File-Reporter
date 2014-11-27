@@ -21,7 +21,7 @@ namespace DuplicateFileReporter.Model
         public static readonly string HelpArgHelpString = "Print this message";
         public static readonly string UseStringClusterAnalysisArgHelpString = "Use file name similarity to cluster possible file duplicates";
         public static readonly string UseFnvHashHelpString = "Use the FNV-1a hash to detect file duplicates";
-        public static readonly string UseCrc32HashHelpString = "Use the CRC-32 hash to detect file duplicates";
+        public static readonly string UseCrc32HashHelpString = "Use the CRC-32 hash to detect file duplicates (BROKEN)";
         public static readonly string UseQuickSampleHashString = "Use a quick sampling hash to detect file duplicates";
         public static readonly string OutputArgHelpString = "Output file to print results to";
 
