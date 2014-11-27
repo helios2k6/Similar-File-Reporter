@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace DuplicateFileReporter.Model
@@ -11,59 +12,46 @@ namespace DuplicateFileReporter.Model
 
         private const string ParenthesisGroups = @"(\(\w*\d*\))";
 
-        private readonly Uri _uri;
+        private readonly string _filePath;
+        private readonly string _cleanFileName;
 
-        private string _cleanFileName;
-
-        public InternalFile(string uri)
+        public InternalFile(string filePath)
         {
-            _uri = new Uri(uri);
-            InitCleanFileName();
+            _filePath = filePath;
+            _cleanFileName = ProcessFileName(filePath);
         }
 
-        public InternalFile(Uri uri)
+        private static string ProcessFileName(string fileName)
         {
-            _uri = uri;
-            InitCleanFileName();
+            fileName = Regex.Replace(fileName, Deliminators, string.Empty);
+
+            fileName = Regex.Replace(fileName, BracketGroups, string.Empty);
+
+            fileName = Regex.Replace(fileName, ParenthesisGroups, string.Empty);
+
+            fileName = Regex.Replace(fileName, " ", string.Empty);
+
+            return fileName;
         }
 
-        private void InitCleanFileName()
+        public string FileName
         {
-            _cleanFileName = GetFileName();
-
-            _cleanFileName = Regex.Replace(_cleanFileName, Deliminators, string.Empty);
-
-            _cleanFileName = Regex.Replace(_cleanFileName, BracketGroups, string.Empty);
-
-            _cleanFileName = Regex.Replace(_cleanFileName, ParenthesisGroups, string.Empty);
-
-            _cleanFileName = Regex.Replace(_cleanFileName, " ", string.Empty);
+            get { return Path.GetFileName(_filePath); }
         }
 
-        public Uri Uri
+        public string FilePath
         {
-            get { return _uri; }
-        }
-
-        public string GetFileName()
-        {
-            var segments = _uri.Segments;
-            return Uri.UnescapeDataString(segments[segments.Length - 1]);
-        }
-
-        public string GetPath()
-        {
-            return Uri.LocalPath;
+            get { return _filePath; }
         }
 
         public override string ToString()
         {
-            return GetPath();
+            return FilePath;
         }
 
-        public string GetCleanedFileName()
+        public string CleanFileName
         {
-            return _cleanFileName;
+            get { return _cleanFileName; }
         }
     }
 }

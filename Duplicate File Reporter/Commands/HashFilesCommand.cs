@@ -16,7 +16,7 @@ namespace DuplicateFileReporter.Commands
             return Task.Factory.StartNew(() =>
             {
                 var digest = new FnvMessageDigest();
-                using (Stream stream = File.OpenRead(file.GetPath()))
+                using (Stream stream = File.OpenRead(file.FilePath))
                 {
                     digest.Update(stream);
                 }
@@ -32,7 +32,7 @@ namespace DuplicateFileReporter.Commands
             return Task.Factory.StartNew(() =>
             {
                 var digest = new Crc32MessageDigest();
-                using (Stream stream = File.OpenRead(file.GetPath()))
+                using (Stream stream = File.OpenRead(file.FilePath))
                 {
                     digest.ComputeHash(stream);
                 }
@@ -60,6 +60,11 @@ namespace DuplicateFileReporter.Commands
         {
             var groups = new Dictionary<HashCode, ISet<QuickSampleMessageDigest>>();
 
+            long hashedFiles = 0;
+            long numFiles = digests.LongCount();
+
+            SendNotification(Globals.LogInfoNotification, string.Format("Sampling {0} file(s)", numFiles));
+
             foreach(var digest in digests)
             {
                 ISet<QuickSampleMessageDigest> group;
@@ -70,6 +75,13 @@ namespace DuplicateFileReporter.Commands
                 }
 
                 group.Add(digest);
+
+                hashedFiles++;
+
+                if(hashedFiles % 20 == 0)
+                {
+                    SendNotification(Globals.LogInfoNotification, string.Format("{0} files sampled. {1} files remaining.", hashedFiles, numFiles - hashedFiles));
+                }
             }
 
             return from g in groups

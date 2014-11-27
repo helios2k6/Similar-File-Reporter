@@ -46,11 +46,11 @@ namespace DuplicateFileReporter.Model
         {
             long sampleHash = 0;
             byte[] buffer = new byte[8]; //Size of Int64
-            var fileInfo = new FileInfo(file.GetPath());
+            var fileInfo = new FileInfo(file.FilePath);
 
             if (fileInfo.Length > 0)
             {
-                using (var stream = System.IO.File.OpenRead(file.GetPath()))
+                using (var stream = System.IO.File.OpenRead(file.FilePath))
                 {
                     //First 4 bytes
                     stream.Read(buffer, 0, 4);

@@ -20,7 +20,7 @@ namespace DuplicateFileReporter.Commands
 
             foreach (var f in cluster.Files)
             {
-                var currentAvg = stringComparisonToolsProxy.CompareSimilarities(file.GetCleanedFileName(), f.GetCleanedFileName());
+                var currentAvg = stringComparisonToolsProxy.CompareSimilarities(file.CleanFileName, f.CleanFileName);
 
                 if (currentAvg < MagicEarlyTerminationCoefficient)
                 {
@@ -65,7 +65,7 @@ namespace DuplicateFileReporter.Commands
 
                     if (!EvaluateFileMembershipInCluster(f, c, out result)) continue;
 
-                    SendNotification(Globals.LogInfoNotification, "Adding " + f.GetFileName() + " to Cluster " + c.Id);
+                    SendNotification(Globals.LogInfoNotification, "Adding " + f.FileName + " to Cluster " + c.Id);
                     possibleClusters.Add(c, result);
                 }
 

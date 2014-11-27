@@ -10,8 +10,6 @@ namespace DuplicateFileReporter.Commands
 {
     public sealed class HydrateInternalFileProxyCommand : SimpleCommand
     {
-        private const string FileUriPrefix = "file:///";
-
         private IEnumerable<InternalFile> HydrateDirectory(string path, IEnumerable<string> blacklist)
         {
             //Get all files in this directory
@@ -25,8 +23,7 @@ namespace DuplicateFileReporter.Commands
             SendNotification(Globals.LogInfoNotification, "Adding: " + path + " to search path");
 
             //Hydrate the proxy
-            var internalFiles = (from f in files
-                                 select new InternalFile(new Uri(FileUriPrefix + f))).ToList();
+            var internalFiles = files.Select(t => new InternalFile(t));
 
             //Hydrate all subdirectories
             var subDirectories = Directory.GetDirectories(path);
@@ -35,7 +32,7 @@ namespace DuplicateFileReporter.Commands
             {
                 var subdirectoryFiles = HydrateDirectory(sd, blacklist);
 
-                internalFiles.AddRange(subdirectoryFiles);
+                internalFiles.Concat(subdirectoryFiles);
             }
 
             return internalFiles;
