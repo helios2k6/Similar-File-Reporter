@@ -4,6 +4,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>--path "Z:\Videos\Anime\Yahari Ore no Seishun Love Comedy wa Machigatteiru" --use-sample-hash</StartArguments>
+    <StartArguments>--path "Z:\Videos\Anime" --use-sample-hash</StartArguments>
   </PropertyGroup>
 </Project>

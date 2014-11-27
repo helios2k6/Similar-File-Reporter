@@ -12,30 +12,8 @@ namespace DuplicateFileReporter.Commands
     {
         private IEnumerable<InternalFile> HydrateDirectory(string path, IEnumerable<string> blacklist)
         {
-            //Get all files in this directory
-            var files = (from f in Directory.GetFiles(path)
-                         let result = (from b in blacklist
-                                       where f.Contains(b)
-                                       select b).Count()
-                         where result == 0
-                         select f).ToList();
-
-            SendNotification(Globals.LogInfoNotification, "Adding: " + path + " to search path");
-
-            //Hydrate the proxy
-            var internalFiles = files.Select(t => new InternalFile(t));
-
-            //Hydrate all subdirectories
-            var subDirectories = Directory.GetDirectories(path);
-
-            foreach (var sd in subDirectories)
-            {
-                var subdirectoryFiles = HydrateDirectory(sd, blacklist);
-
-                internalFiles = internalFiles.Concat(subdirectoryFiles);
-            }
-
-            return internalFiles;
+            var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).Except(blacklist);
+            return files.Select(t => new InternalFile(t));
         }
 
         public override void Execute(INotification notification)
