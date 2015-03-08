@@ -26,9 +26,6 @@ namespace DuplicateFileReporter.Commands
 
                 switch (hashCode.HashCodeType)
                 {
-                    case HashCodeType.Crc32Hash:
-                        report.ReportType = ReportType.Crc32HashReport;
-                        break;
                     case HashCodeType.Fnv1A32Hash:
                         report.ReportType = ReportType.Fnv32HashReport;
                         break;

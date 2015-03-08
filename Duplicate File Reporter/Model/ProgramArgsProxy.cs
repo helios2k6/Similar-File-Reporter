@@ -14,27 +14,41 @@ namespace DuplicateFileReporter.Model
 
             InvalidArgs = parser.InvalidArgs;
 
-            var path = Directory.GetCurrentDirectory();
+            string path = Directory.GetCurrentDirectory();
             IList<string> pathCollection;
             if (parserDictionary.TryGetValue(ProgramArgsConstants.PathArg, out pathCollection))
             {
-                path = pathCollection.Count < 1 ? Directory.GetCurrentDirectory() : pathCollection[0];
+                path = pathCollection.Count < 1 ? path : pathCollection[0];
             }
 
             IList<string> blacklistCollection;
             if (!parserDictionary.TryGetValue(ProgramArgsConstants.BlacklistArg, out blacklistCollection))
+            {
                 blacklistCollection = new List<string>();
+            }
+
+            IList<string> fileGlobs;
+            if (!parserDictionary.TryGetValue(ProgramArgsConstants.FileGlobsArg, out fileGlobs))
+            {
+                fileGlobs = new List<string>
+                {
+                    "*",
+                };
+            }
 
             var outputFile = string.Empty;
             IList<string> outputFileCollection;
             if (parserDictionary.TryGetValue(ProgramArgsConstants.OutputArg, out outputFileCollection))
+            {
                 outputFile = outputFileCollection[0];
+            }
 
             var outputFileFormat = OutputReportType.FLAT.ToString();
             IList<string> outputFileFormatCollection;
             if (parserDictionary.TryGetValue(ProgramArgsConstants.OutputFormatArg, out outputFileFormatCollection))
+            {
                 outputFileFormat = outputFileFormatCollection[0];
-
+            }
 
             //Add default blacklist stuff
             blacklistCollection.Add("thumbs.db");
@@ -49,19 +63,18 @@ namespace DuplicateFileReporter.Model
             var userWantsHelp = parserDictionary.ContainsKey(ProgramArgsConstants.HelpArg);
             var useStringClusterAnalysis = parserDictionary.ContainsKey(ProgramArgsConstants.UseStringClusterAnalysisArg);
             var useFnv = parserDictionary.ContainsKey(ProgramArgsConstants.UseFnvHash);
-            var useCrc32 = parserDictionary.ContainsKey(ProgramArgsConstants.UseCrc32Hash);
             var useQuickSampleHash = parserDictionary.ContainsKey(ProgramArgsConstants.UseQuickSampleHash);
 
             Args = new ProgramArgs(
                 path, 
                 useStringClusterAnalysis, 
                 useFnv, 
-                useCrc32, 
                 useQuickSampleHash, 
                 blacklistCollection,
                 outputFile, 
                 outputFileFormat, 
-                userWantsHelp);
+                userWantsHelp,
+                fileGlobs);
         }
 
         public ProgramArgs Args { get; private set; }

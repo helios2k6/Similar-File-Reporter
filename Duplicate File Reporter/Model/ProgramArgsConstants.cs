@@ -11,23 +11,21 @@ namespace DuplicateFileReporter.Model
         public static readonly string HelpArg = "--help";
         public static readonly string UseStringClusterAnalysisArg = "--use-name-analysis";
         public static readonly string UseFnvHash = "--use-fnv-hash";
-        public static readonly string UseCrc32Hash = "--use-crc32-hash";
         public static readonly string UseQuickSampleHash = "--use-sample-hash";
         public static readonly string OutputArg = "--output";
         public static readonly string OutputFormatArg = "--output-format";
+        public static readonly string FileGlobsArg = "--file-globs";
 
         public static readonly string PathArgHelpString = "Folder path you want to analyze. (Default: Current directory)";
         public static readonly string BlacklistArgHelpString = "Files you do not want to analyze";
         public static readonly string HelpArgHelpString = "Print this message";
         public static readonly string UseStringClusterAnalysisArgHelpString = "Use file name similarity to cluster possible file duplicates";
         public static readonly string UseFnvHashHelpString = "Use the FNV-1a hash to detect file duplicates";
-        public static readonly string UseCrc32HashHelpString = "Use the CRC-32 hash to detect file duplicates (BROKEN)";
         public static readonly string UseQuickSampleHashString = "Use a quick sampling hash to detect file duplicates";
         public static readonly string OutputArgHelpString = "Output file to print results to";
+        public static readonly string FileGlobsArgHelpString = "The file globs you wish to capture. (Default: All file types)";
 
-        public static readonly string OutputFormatArgHelpString =
-            "Format of the report. Valid inputs: XML, JSON, or flat (Default: Flat)";
-
+        public static readonly string OutputFormatArgHelpString = "Format of the report. Valid inputs: XML, JSON, or flat (Default: Flat)";
 
         public static IList<string> ValidProgramArgsVector
         {
@@ -40,10 +38,10 @@ namespace DuplicateFileReporter.Model
                     HelpArg, 
                     UseStringClusterAnalysisArg,
                     UseFnvHash,
-                    UseCrc32Hash,
                     UseQuickSampleHash,
                     OutputArg,
-                    OutputFormatArg
+                    OutputFormatArg,
+                    FileGlobsArg,
                 };
             }
         }
@@ -58,11 +56,11 @@ namespace DuplicateFileReporter.Model
                             {BlacklistArg, BlacklistArgHelpString},
                             {UseStringClusterAnalysisArg, UseStringClusterAnalysisArgHelpString},
                             {UseFnvHash, UseFnvHashHelpString},
-                            {UseCrc32Hash, UseCrc32HashHelpString},
                             {UseQuickSampleHash, UseQuickSampleHashString},
                             {HelpArg, HelpArgHelpString},
                             {OutputArg, OutputArgHelpString},
                             {OutputFormatArg, OutputFormatArgHelpString},
+                            {FileGlobsArg, FileGlobsArgHelpString},
                         };
             }
         }

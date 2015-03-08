@@ -1,19 +1,19 @@
-﻿using System;
+﻿using DuplicateFileReporter.Model;
+using PureMVC.Interfaces;
+using PureMVC.Patterns;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DuplicateFileReporter.Model;
-using PureMVC.Interfaces;
-using PureMVC.Patterns;
 
 namespace DuplicateFileReporter.Commands
 {
     public sealed class HydrateInternalFileProxyCommand : SimpleCommand
     {
-        private IEnumerable<InternalFile> HydrateDirectory(string path, IEnumerable<string> blacklist)
+        private IEnumerable<InternalFile> HydrateDirectory(string path, IEnumerable<string> blacklist, IEnumerable<string> fileGlobs)
         {
-            var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories).Except(blacklist);
-            return files.Select(t => new InternalFile(t));
+            return from glob in fileGlobs
+                   from file in Directory.EnumerateFiles(path, glob, SearchOption.AllDirectories).Except(blacklist)
+                   select new InternalFile(file);
         }
 
         public override void Execute(INotification notification)
@@ -23,7 +23,7 @@ namespace DuplicateFileReporter.Commands
 
             if (!Directory.Exists(path)) Globals.Fail(("Cannot find path " + path));
 
-            var allFiles = HydrateDirectory(path, programArgsProxy.Args.Blacklist.ToList());
+            var allFiles = HydrateDirectory(path, programArgsProxy.Args.Blacklist, programArgsProxy.Args.FileGlobs);
             var internalFileProxy = Facade.RetrieveProxy<InternalFileProxy>(Globals.InternalFileProxyName);
 
             internalFileProxy.AddFiles(allFiles);

@@ -12,35 +12,16 @@ namespace DuplicateFileReporter.Commands
 {
     public sealed class HashFilesCommand : SimpleCommand
     {
-        private Task HashFileFnvAsync(InternalFile file)
+        private void HashFileFnv(InternalFile file)
         {
-            return Task.Factory.StartNew(() =>
+            var digest = new FnvMessageDigest();
+            using (Stream stream = File.OpenRead(file.FilePath))
             {
-                var digest = new FnvMessageDigest();
-                using (Stream stream = File.OpenRead(file.FilePath))
-                {
-                    digest.Update(stream);
-                }
-                
-                digest.DoFinal();
-                var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
-                hashProxy.AddFileHashEntry(digest, file);
-            });
-        }
+                digest.Update(stream);
+            }
 
-        private Task HashFileCrc32Async(InternalFile file)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                var digest = new Crc32MessageDigest();
-                using (Stream stream = File.OpenRead(file.FilePath))
-                {
-                    digest.ComputeHash(stream);
-                }
-
-                var hashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);
-                hashProxy.AddFileHashEntry(digest, file);
-            });
+            digest.DoFinal();
+            Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy).AddFileHashEntry(digest, file);
         }
 
         private void AddQuickSampleDigest(QuickSampleMessageDigest digest)
@@ -96,7 +77,7 @@ namespace DuplicateFileReporter.Commands
                    select digest;
         }
 
-        private async Task ProcessFiles(IEnumerable<QuickSampleMessageDigest> digests)
+        private void ProcessFiles(IEnumerable<QuickSampleMessageDigest> digests)
         {
             var args = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy).Args;
 
@@ -113,12 +94,7 @@ namespace DuplicateFileReporter.Commands
 
                 if (args.UseFnvHash)
                 {
-                    await HashFileFnvAsync(digest.File);
-                }
-
-                if (args.UseCrc32Hash)
-                {
-                    await HashFileCrc32Async(digest.File);
+                    HashFileFnv(digest.File);
                 }
 
                 hashedFiles++;
@@ -135,11 +111,11 @@ namespace DuplicateFileReporter.Commands
         public override void Execute(INotification notification)
         {
             var argProxy = Facade.RetrieveProxy<ProgramArgsProxy>(Globals.ProgramArgsProxy);
-            if (argProxy.Args.UseCrc32Hash || argProxy.Args.UseFnvHash || argProxy.Args.UseQuickSampleHash)
+            if (argProxy.Args.UseFnvHash || argProxy.Args.UseQuickSampleHash)
             {
                 var sampleDigests = GenerateSampleDigests();
                 var suspectedDuplicateFileSets = FilterUniqueSampleDigests(sampleDigests);
-                ProcessFiles(suspectedDuplicateFileSets).Wait();
+                ProcessFiles(suspectedDuplicateFileSets);
             }
 
             var fileHashProxy = Facade.RetrieveProxy<FileHashProxy>(Globals.FileHashProxy);

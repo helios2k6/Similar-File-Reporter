@@ -11,8 +11,6 @@ namespace DuplicateFileReporter.Model
             _description = description;
         }
 
-        public static readonly ReportType Crc32HashReport = new ReportType("CRC-32 Hash Report");
-
         public static readonly ReportType Fnv32HashReport = new ReportType("FNV-1a 32-Bit Hash Report");
 
         public static readonly ReportType QuickSampleReport = new ReportType("Quick Sample Report");

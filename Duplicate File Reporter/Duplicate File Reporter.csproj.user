@@ -4,6 +4,6 @@
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <StartArguments>--path "Z:\Videos\Anime" --use-sample-hash</StartArguments>
+    <StartArguments>--path "E:\File Harbor" --file-globs "%2a.png" "%2a.jpg" "%2a.bmp" --use-sample-hash</StartArguments>
   </PropertyGroup>
 </Project>
